@@ -1,0 +1,6 @@
+@CRM_DOBRO_HostAddress = http://localhost:5089
+
+GET {{CRM_DOBRO_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
