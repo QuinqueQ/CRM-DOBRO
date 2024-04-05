@@ -5,9 +5,7 @@ namespace CRM_DOBRO.Entities
 {
     public class Contact
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [ForeignKey("Marketing")]
         public required int MarketingId { get; set; }
         public required string Name { get; set; }
         public string? Surname { get; set; }
@@ -18,7 +16,9 @@ namespace CRM_DOBRO.Entities
         public required DateTime DateOfLastChanges { get; set; }
 
         // Навигационные свойства
-        public required User Marketing { get; set; }
+
+        public User? Marketing { get; set; }
+        public Lead? Lead { get; set; }
     }
    
 }
