@@ -16,6 +16,7 @@ namespace CRM_DOBRO.Entities
         // Навигационные свойства
         public required Contact Contact { get; set; }
         public User? Saler { get; set; }
+        public List<Sale>? Sales { get; set; }
     }
     
 }
