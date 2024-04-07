@@ -4,10 +4,10 @@ using System.Runtime.CompilerServices;
 
 namespace CRM_DOBRO.Services
 {
-    public class AdminService
+    public class UserService
     {
         private readonly CRMDBContext _context;
-        public AdminService(CRMDBContext context)
+        public UserService(CRMDBContext context)
         {
             _context = context;
         }

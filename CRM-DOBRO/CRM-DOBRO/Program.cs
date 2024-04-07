@@ -14,7 +14,7 @@ internal class Program
         builder.Services.AddDbContext<CRMDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        builder.Services.AddScoped<AdminService>();
+        builder.Services.AddScoped<UserService>();
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();

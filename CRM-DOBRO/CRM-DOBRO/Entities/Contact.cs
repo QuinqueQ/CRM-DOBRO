@@ -1,4 +1,5 @@
 ﻿using CRM_DOBRO.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRM_DOBRO.Entities
@@ -7,6 +8,7 @@ namespace CRM_DOBRO.Entities
     {
         public int Id { get; set; }
         public required int MarketingId { get; set; }
+        [MaxLength(50)]
         public required string Name { get; set; }
         public string? Surname { get; set; }
         public string? LastName { get; set; }

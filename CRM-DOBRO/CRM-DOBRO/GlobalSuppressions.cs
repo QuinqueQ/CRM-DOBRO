@@ -5,6 +5,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0290:Использовать основной конструктор", Justification = "<Ожидание>", Scope = "member", Target = "~M:CRM_DOBRO.Controllers.AdminController.#ctor(CRM_DOBRO.Data.CRMDBContext)")]
-[assembly: SuppressMessage("Style", "IDE0290:Использовать основной конструктор", Justification = "<Ожидание>", Scope = "member", Target = "~M:CRM_DOBRO.Services.AdminService.#ctor(CRM_DOBRO.Data.CRMDBContext)")]
-[assembly: SuppressMessage("Style", "IDE0290:Использовать основной конструктор", Justification = "<Ожидание>", Scope = "member", Target = "~M:CRM_DOBRO.Controllers.AdminController.#ctor(CRM_DOBRO.Services.AdminService)")]
+[assembly: SuppressMessage("Style", "IDE0290:Использовать основной конструктор", Justification = "<Ожидание>", Scope = "member", Target = "~M:CRM_DOBRO.Controllers.UserController.#ctor(CRM_DOBRO.Data.CRMDBContext)")]
+[assembly: SuppressMessage("Style", "IDE0290:Использовать основной конструктор", Justification = "<Ожидание>", Scope = "member", Target = "~M:CRM_DOBRO.Services.UserService.#ctor(CRM_DOBRO.Data.CRMDBContext)")]
+[assembly: SuppressMessage("Style", "IDE0290:Использовать основной конструктор", Justification = "<Ожидание>", Scope = "member", Target = "~M:CRM_DOBRO.Controllers.UserController.#ctor(CRM_DOBRO.Services.AdminService)")]

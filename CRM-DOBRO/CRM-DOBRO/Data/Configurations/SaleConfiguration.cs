@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CRM_DOBRO.Configurations
+namespace CRM_DOBRO.Data.Configurations
 {
     public class SaleConfiguration : IEntityTypeConfiguration<Sale>
     {
