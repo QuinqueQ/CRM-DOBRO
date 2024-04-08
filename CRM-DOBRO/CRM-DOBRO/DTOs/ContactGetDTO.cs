@@ -1,5 +1,4 @@
 ﻿using CRM_DOBRO.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace CRM_DOBRO.DTOs
 {

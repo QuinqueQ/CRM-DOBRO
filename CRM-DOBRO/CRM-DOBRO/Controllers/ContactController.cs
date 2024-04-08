@@ -1,36 +1,54 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CRM_DOBRO.DTOs;
+using CRM_DOBRO.Entities;
+using CRM_DOBRO.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CRM_DOBRO.Controllers
 {
     [ApiController]
     [Route("api/contact")]
+    [Authorize]
     public class ContactController : Controller
     {
-        public ContactController()
-        {
+        private readonly ContactService _contactService;
 
+        public ContactController(ContactService contactService)
+        {
+            this._contactService = contactService;
         }
 
         [Authorize(Roles = "Admin, Marketing")]
-        [HttpGet]
+        [HttpGet("contacts")]
         public async Task<IActionResult> GetContacts()
         {
-            return View();
+           var contacts = await _contactService.GetContactsAsync();
+            if (contacts == null || contacts.Count == 0)
+                return NoContent();
+
+            return Ok(contacts);
         }
 
         [Authorize(Roles = "Saler")]
-        [HttpGet("lead")]
+        [HttpGet("leads")]
         public async Task<IActionResult> GetLeads()
         {
-            return View();
+            var leads = await _contactService.GetLeadsAsync();
+            if(leads == null || leads.Count == 0)
+                return NoContent();
+           
+            return Ok(leads);
         }
 
         [Authorize(Roles = "Saler")]
         [HttpPost]
-        public async Task<IActionResult> ContactCreate()
+        public async Task<IActionResult> ContactCreate(ContactSetDTO contact)
         {
-            return View();
+            int marketingId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await _contactService.CreateContactAsync(contact, marketingId);
+            return Created();
+
         }
 
         [Authorize(Roles = "Marketing, Saler")]

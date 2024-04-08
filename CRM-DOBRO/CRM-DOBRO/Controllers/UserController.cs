@@ -126,12 +126,12 @@ namespace CRM_DOBRO.Controllers
         {
             var claims = new Claim[]
             {
-            new Claim("guid", Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.FullName),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim("DateOfBan", user.BlockingDate.ToString() ?? "")
+            new ("guid", Guid.NewGuid().ToString()),
+            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new (ClaimTypes.Name, user.FullName),
+            new (ClaimTypes.Email, user.Email),
+            new (ClaimTypes.Role, user.Role.ToString()),
+            new ("DateOfBan", user.BlockingDate.ToString() ?? "")
             
             };
 
