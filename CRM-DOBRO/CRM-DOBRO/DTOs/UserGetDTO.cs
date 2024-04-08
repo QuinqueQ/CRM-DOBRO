@@ -2,7 +2,7 @@
 
 namespace CRM_DOBRO.DTOs
 {
-    public class AdminGetDTO
+    public class UserGetDTO
     {
         public int Id { get; set; }
         public required string FullName { get; set; }

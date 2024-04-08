@@ -1,4 +1,4 @@
-﻿using CRM_DOBRO.Configurations;
+﻿using CRM_DOBRO.Data.Configurations;
 using CRM_DOBRO.Entities;
 using Microsoft.EntityFrameworkCore;
 

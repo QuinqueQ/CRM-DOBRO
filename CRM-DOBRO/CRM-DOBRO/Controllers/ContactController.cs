@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CRM_DOBRO.Controllers
 {
@@ -11,30 +12,35 @@ namespace CRM_DOBRO.Controllers
 
         }
 
+        [Authorize(Roles = "Admin, Marketing")]
         [HttpGet]
         public async Task<IActionResult> GetContacts()
         {
             return View();
         }
 
+        [Authorize(Roles = "Saler")]
         [HttpGet("lead")]
         public async Task<IActionResult> GetLeads()
         {
             return View();
         }
 
+        [Authorize(Roles = "Saler")]
         [HttpPost]
         public async Task<IActionResult> ContactCreate()
         {
             return View();
         }
 
+        [Authorize(Roles = "Marketing, Saler")]
         [HttpPut]
         public async Task<IActionResult> ContactUpdate()
         {
             return View();
         }
 
+        [Authorize(Roles = "Marketing")]
         [HttpPut("status")]
         public async Task<IActionResult> ContactStatusUpdate()
         {

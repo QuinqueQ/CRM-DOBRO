@@ -1,5 +1,11 @@
-﻿using CRM_DOBRO.Services;
+﻿using CRM_DOBRO.DTOs;
+using CRM_DOBRO.Entities;
+using CRM_DOBRO.Enums;
+using CRM_DOBRO.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CRM_DOBRO.Controllers
 {
@@ -13,53 +19,128 @@ namespace CRM_DOBRO.Controllers
             _userservice = userservice;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> SingIn()
-        {
-            return Ok();
+        [AllowAnonymous]
+        [HttpGet("login")]
+        public async Task<IActionResult> LogIn(string email, string password)
+        { 
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                return Unauthorized();
+
+            var user = await _userservice.LogInUserAsync(email, password);
+            if (user != null)
+            {
+                await LoginWithHttpContext(user);
+
+                return Ok();
+            }
+
+            return Unauthorized();
+
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         public async Task<IActionResult> ShowAllUsers()
         {
-            return  Ok();
+            List<UserGetDTO> users = await _userservice.GetAllUsersAsync();
+            return Ok(users);
         }
 
+        [Authorize]
         [HttpGet("details")]
-        public async Task<IActionResult> UserShowDetails()
+        public IActionResult UserShowDetails()
         {
-            return Ok();
+            var user = HttpContext.User;
+            var userDetails = new
+            {
+                FullName = user.Identity?.Name,
+                Email = user.FindFirst(ClaimTypes.Email)?.Value,
+                Role = user.FindFirst(ClaimTypes.Role)?.Value,
+                DateOfBan = user.FindFirst("DateOfBan")?.Value
+            };
+
+            return Ok(userDetails);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> UserCreate()
+        public async Task<IActionResult> UserCreate(UserSetDTO user)
         {
-            return BadRequest();
+            if (string.IsNullOrWhiteSpace(user.FullName)
+                || user.FullName == "string"
+                || string.IsNullOrWhiteSpace(user.Password)
+                || user.Password == "string"
+                || string.IsNullOrWhiteSpace(user.Email)
+                || user.Email == "string")
+            {
+                return BadRequest();
+            }
+
+            await _userservice.CreateNewUserAsync(user);
+            return Created();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UserBan()
+        [Authorize(Roles = "Admin")]
+        [HttpPut("ban/{id}")]
+        public async Task<IActionResult> UserBan(int id)
         {
+          var user = await _userservice.BanUserAsync(id);
+            if (user == null)
+                return NotFound();
+
             return Ok();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> UserDelete()
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> UserDeleteById(int id)
         {
-            return NotFound();
+            await _userservice.DeleteUserAsync(id);
+            return NoContent();
         }
 
-        [HttpPut("role")]
-        public async Task<IActionResult> RoleUpdate()
+        [Authorize(Roles = "Admin")]
+        [HttpPut("role/{id}")]
+        public async Task<IActionResult> RoleUpdate(int id, UserRole newRole)
         {
-            return Ok();
+            await _userservice.ChangeRoleAsync(id, newRole);
+            return NoContent();
         }
 
+        [EnsureNotBlocked]
         [HttpPut("password")]
-        public async Task<IActionResult> PasswordUpdate()
+        public async Task<IActionResult> ChangePassword(string NewPassword)
         {
+            if (string.IsNullOrWhiteSpace(NewPassword) || string.IsNullOrWhiteSpace(NewPassword))
+                return BadRequest();
+
+                int userId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+                await _userservice.ChangePasswordAsync(userId, NewPassword);
+
             return Ok();
         }
+
+        private Task LoginWithHttpContext(User user)
+        {
+            var claims = new Claim[]
+            {
+            new Claim("guid", Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.FullName),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim("DateOfBan", user.BlockingDate.ToString() ?? "")
+            
+            };
+
+            var identity = new ClaimsIdentity(claims, "Cookies");
+            var principal = new ClaimsPrincipal(identity);
+
+            return HttpContext.SignInAsync(principal);
+        }
+
 
     }
 }

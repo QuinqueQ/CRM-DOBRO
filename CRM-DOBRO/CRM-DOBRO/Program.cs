@@ -1,6 +1,7 @@
 using CRM_DOBRO.Data;
 using CRM_DOBRO.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 internal class Program
 {
@@ -19,6 +20,21 @@ internal class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddAuthentication().AddCookie("Cookies", opts =>
+        {
+            opts.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            opts.Events.OnRedirectToLogin = (context) =>
+            {
+                context.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            };
+            opts.Events.OnRedirectToAccessDenied = (context) =>
+            {
+                context.Response.StatusCode = 403;
+                return Task.CompletedTask;
+            };
+        });
 
         var app = builder.Build();
 
