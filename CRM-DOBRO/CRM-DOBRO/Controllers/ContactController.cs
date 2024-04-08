@@ -10,14 +10,9 @@ namespace CRM_DOBRO.Controllers
     [ApiController]
     [Route("api/contact")]
     [Authorize]
-    public class ContactController : Controller
+    public class ContactController(ContactService contactService) : Controller
     {
-        private readonly ContactService _contactService;
-
-        public ContactController(ContactService contactService)
-        {
-            this._contactService = contactService;
-        }
+        private readonly ContactService _contactService = contactService;
 
         [Authorize(Roles = "Admin, Marketing")]
         [HttpGet("contacts")]
