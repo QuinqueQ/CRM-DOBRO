@@ -1,5 +1,4 @@
 ﻿using CRM_DOBRO.DTOs;
-using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
 using CRM_DOBRO.Services;
 using Microsoft.AspNetCore.Authorization;

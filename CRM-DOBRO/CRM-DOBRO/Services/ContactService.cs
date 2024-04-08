@@ -3,7 +3,6 @@ using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 namespace CRM_DOBRO.Services
 {
     public class ContactService

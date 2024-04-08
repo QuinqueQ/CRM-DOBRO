@@ -17,7 +17,7 @@ internal class Program
 
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<ContactService>();
-
+        builder.Services.AddScoped<LeadService>();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
