@@ -1,11 +1,9 @@
 ﻿using CRM_DOBRO.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace CRM_DOBRO.DTOs
 {
     public class ContactSetDTO
     {
-        public required int MarketingId { get; set; }
         public required string Name { get; set; }
         public string? Surname { get; set; }
         public string? LastName { get; set; }

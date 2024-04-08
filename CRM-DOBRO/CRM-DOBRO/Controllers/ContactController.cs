@@ -1,5 +1,6 @@
 ﻿using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
+using CRM_DOBRO.Enums;
 using CRM_DOBRO.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,17 +53,19 @@ namespace CRM_DOBRO.Controllers
         }
 
         [Authorize(Roles = "Marketing, Saler")]
-        [HttpPut]
-        public async Task<IActionResult> ContactUpdate()
+        [HttpPut("{contactid}")]
+        public async Task<IActionResult> ContactUpdate(ContactSetDTO contact, int contactid)
         {
-            return View();
+            await _contactService.ContactChangeAsync(contact, contactid);
+            return Ok();
         }
 
         [Authorize(Roles = "Marketing")]
-        [HttpPut("status")]
-        public async Task<IActionResult> ContactStatusUpdate()
+        [HttpPut("status/{contactid}")]
+        public async Task<IActionResult> ContactStatusUpdate (ContactStatus status, int contactid)
         {
-            return View();
+            await _contactService.ContactChangeStatusAsync(status, contactid);
+            return Ok();
         }
 
     }

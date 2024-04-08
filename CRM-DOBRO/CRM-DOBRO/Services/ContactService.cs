@@ -29,9 +29,9 @@ namespace CRM_DOBRO.Services
                     Surname = contact.Surname,
                     LastName = contact.LastName,
                     Email = contact.Email,
-                    MarketingId = contact.MarketingId,
                     PhoneNumber = contact.PhoneNumber,
                     Status = contact.Status,
+                    MarketingId = contact.MarketingId,
                     DateOfLastChanges = contact.DateOfLastChanges,
                 };
                 contactsDTO.Add(contactDTO);            
@@ -51,24 +51,45 @@ namespace CRM_DOBRO.Services
         {
             Contact newContact = new()
             {
-                MarketingId = marketingId,
-                Email = contact.Email,
-                DateOfLastChanges = contact.DateOfLastChanges,
-                LastName = contact.LastName,
                 Name = contact.Name,
+                Surname= contact.Surname,
+                LastName = contact.LastName,
+                Email = contact.Email,
                 PhoneNumber = contact.PhoneNumber,
                 Status= contact.Status,
-                Surname= contact.Surname,
+                MarketingId = marketingId,
+                DateOfLastChanges = contact.DateOfLastChanges,
             };
             _context.Add(newContact);
             await _context.SaveChangesAsync();
         }
 
-        public async Task ContactChangeAsync(ContactGetDTO contact, int contactId)
+        public async Task ContactChangeAsync(ContactSetDTO contact, int contactId)
         {
           var contactToChange = await _context.Contacts.FirstAsync(c => c.Id == contactId);
           
-        
+            contactToChange = new()
+            {
+                Name = contact.Name,
+                Surname = contact.Surname,
+                LastName = contact.LastName,
+                Email = contact.Email,
+                PhoneNumber = contact.PhoneNumber,
+                Status = contact.Status,
+                MarketingId = contactToChange.MarketingId,
+                DateOfLastChanges = contact.DateOfLastChanges,
+            };
+            _context.Add(contactToChange);
+            await _context.SaveChangesAsync();
+
+        }
+
+        public async Task ContactChangeStatusAsync(ContactStatus status, int contactId)
+        {
+            var contact = await _context.Contacts.FirstAsync(c => c.Id == contactId);
+            contact.Status = status;
+            _context.Add(contact);
+            await _context.SaveChangesAsync();
         }
     }
 }
