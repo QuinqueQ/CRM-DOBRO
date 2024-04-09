@@ -1,4 +1,5 @@
-﻿using CRM_DOBRO.DTOs;
+﻿using CRM_DOBRO.Data;
+using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
 using CRM_DOBRO.Services;
@@ -9,16 +10,13 @@ using System.Security.Claims;
 
 namespace CRM_DOBRO.Controllers
 {
+    [EnsureNotBlocked]
     [ApiController]
     [Route("api/user")]
-    public class UserController : Controller
+    public class UserController(UserService userservice) : Controller
     {
-        private readonly UserService _userservice;
-        public UserController(UserService userservice)
-        {
-            _userservice = userservice;
-        }
-
+        private readonly UserService _userservice = userservice;
+        
         [AllowAnonymous]
         [HttpGet("login")]
         public async Task<IActionResult> LogIn(string email, string password)
@@ -43,6 +41,8 @@ namespace CRM_DOBRO.Controllers
         public async Task<IActionResult> ShowAllUsers()
         {
             List<UserGetDTO> users = await _userservice.GetAllUsersAsync();
+            if(users.Count == 0)
+                return NoContent();
             return Ok(users);
         }
 
@@ -72,10 +72,9 @@ namespace CRM_DOBRO.Controllers
                 || string.IsNullOrWhiteSpace(user.Password)
                 || user.Password == "string"
                 || string.IsNullOrWhiteSpace(user.Email)
-                || user.Email == "string")
-            {
+                || user.Email == "string"
+                )
                 return BadRequest();
-            }
 
             await _userservice.CreateNewUserAsync(user);
             return Created();
@@ -96,7 +95,10 @@ namespace CRM_DOBRO.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> UserDeleteById(int id)
         {
-            await _userservice.DeleteUserAsync(id);
+            bool userFound = await _userservice.DeleteUserAsync(id);
+            if (!userFound)
+                return NotFound();
+            
             return NoContent();
         }
 
@@ -104,11 +106,14 @@ namespace CRM_DOBRO.Controllers
         [HttpPut("role/{id}")]
         public async Task<IActionResult> RoleUpdate(int id, UserRole newRole)
         {
-            await _userservice.ChangeRoleAsync(id, newRole);
+            bool userFound = await _userservice.ChangeRoleAsync(id, newRole);
+            if(!userFound)
+                return NotFound();
+
             return NoContent();
         }
 
-        [EnsureNotBlocked]
+        
         [HttpPut("password")]
         public async Task<IActionResult> ChangePassword(string NewPassword)
         {

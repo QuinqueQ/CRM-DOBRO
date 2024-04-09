@@ -1,4 +1,5 @@
-﻿using CRM_DOBRO.DTOs;
+﻿using CRM_DOBRO.Data;
+using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
 using CRM_DOBRO.Services;
@@ -8,23 +9,19 @@ using System.Security.Claims;
 
 namespace CRM_DOBRO.Controllers
 {
+    [EnsureNotBlocked]
     [ApiController]
     [Route("api/lead")]
-    public class LeadController : Controller
+    public class LeadController(LeadService leadService) : Controller
     {
-        private readonly LeadService _leadService;
-
-        public LeadController(LeadService leadService)
-        {
-            this._leadService = leadService;
-        }
+        private readonly LeadService _leadService = leadService;
 
         [Authorize(Roles = "Saler")]
         [HttpGet]
-        public async Task<IActionResult> GetLeads()
+        public async Task<IActionResult> GetMyLeads()
         {
             var salerid = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var leads = await _leadService.GetLeadsAsync(salerid);
+            var leads = await _leadService.GetMyLeadsAsync(salerid);
             return Ok(leads);
         }
 

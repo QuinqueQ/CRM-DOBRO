@@ -1,4 +1,5 @@
-﻿using CRM_DOBRO.DTOs;
+﻿using CRM_DOBRO.Data;
+using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Enums;
 using CRM_DOBRO.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -7,9 +8,9 @@ using System.Security.Claims;
 
 namespace CRM_DOBRO.Controllers
 {
+    [EnsureNotBlocked]
     [ApiController]
     [Route("api/contact")]
-    [Authorize]
     public class ContactController(ContactService contactService) : Controller
     {
         private readonly ContactService _contactService = contactService;
@@ -19,7 +20,7 @@ namespace CRM_DOBRO.Controllers
         public async Task<IActionResult> GetContacts()
         {
            var contacts = await _contactService.GetContactsAsync();
-            if (contacts == null || contacts.Count == 0)
+            if (contacts.Count == 0)
                 return NoContent();
 
             return Ok(contacts);
@@ -29,8 +30,8 @@ namespace CRM_DOBRO.Controllers
         [HttpGet("leads")]
         public async Task<IActionResult> GetLeads()
         {
-            var leads = await _contactService.GetLeadsAsync();
-            if(leads == null || leads.Count == 0)
+            var leads = await _contactService.GetContactLeadsAsync();
+            if(leads.Count == 0)
                 return NoContent();
            
             return Ok(leads);

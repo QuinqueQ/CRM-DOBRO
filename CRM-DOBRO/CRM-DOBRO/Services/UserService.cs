@@ -6,13 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRM_DOBRO.Services
 {
-    public class UserService
+    public class UserService(CRMDBContext context)
     {
-        private readonly CRMDBContext _context;
-        public UserService(CRMDBContext context)
-        {
-            _context = context;
-        }
+        private readonly CRMDBContext _context = context;
 
         public async Task NewAdmin()
         {
@@ -29,7 +25,7 @@ namespace CRM_DOBRO.Services
 
         public async Task CreateNewUserAsync(UserSetDTO newuser)
         {
-            User user = new User
+            User user = new()
             {
                 FullName = newuser.FullName,
                 Password = newuser.Password,
@@ -43,11 +39,11 @@ namespace CRM_DOBRO.Services
         public async Task<List<UserGetDTO>> GetAllUsersAsync()
         {
             List<User> users = await _context.Users.ToListAsync();
-            List<UserGetDTO> usersDTO = new List<UserGetDTO>();
+            List<UserGetDTO> usersDTO = [];
 
             foreach (var user in users)
             {
-                UserGetDTO userDTO = new UserGetDTO
+                UserGetDTO userDTO = new ()
                 {
                     FullName = user.FullName,
                     Id = user.Id,
@@ -82,19 +78,26 @@ namespace CRM_DOBRO.Services
         }
 
 
-        public async Task DeleteUserAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
             var user = await _context.Users.FirstAsync(u => u.Id == id);
+            if (user == null)
+                return false;
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task ChangeRoleAsync(int id, UserRole newRole)
+        public async Task<bool> ChangeRoleAsync(int id, UserRole newRole)
         {
-            User user = await _context.Users.FirstAsync(u => u.Id == id);
+            var user = await _context.Users.FirstAsync(u => u.Id == id);
+            if(user == null)
+                return false;
+
             user.Role = newRole;
             _context.Update(user);
             await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task ChangePasswordAsync(int id, string newPassword)

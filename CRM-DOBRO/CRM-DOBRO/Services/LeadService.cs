@@ -15,7 +15,7 @@ namespace CRM_DOBRO.Services
             this._context = context;
         }
 
-        public async Task<List<LeadGetDTO>> GetLeadsAsync(int salerId)
+        public async Task<List<LeadGetDTO>> GetMyLeadsAsync(int salerId)
         {
             List<Lead> leads = await _context.Leads
                 .Where(l => l.SalerId == salerId)

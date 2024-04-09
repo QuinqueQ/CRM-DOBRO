@@ -1,4 +1,5 @@
-﻿using CRM_DOBRO.DTOs;
+﻿using CRM_DOBRO.Data;
+using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace CRM_DOBRO.Controllers
 {
+    [EnsureNotBlocked]
     [ApiController]
     [Route("api/sale")]
     public class SaleController(SaleService saleservice) : Controller

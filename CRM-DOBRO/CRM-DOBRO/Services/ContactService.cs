@@ -14,7 +14,7 @@ namespace CRM_DOBRO.Services
             this._context = context;
         }
 
-        public async Task<List<ContactGetDTO>?> GetContactsAsync()
+        public async Task<List<ContactGetDTO>> GetContactsAsync()
         {
            List<Contact> contacts = await _context.Contacts.ToListAsync();
            List<ContactGetDTO> contactsDTO = new();
@@ -38,12 +38,30 @@ namespace CRM_DOBRO.Services
             return contactsDTO;
         }
 
-        public async Task<List<Contact>?> GetLeadsAsync()
+        public async Task<List<ContactGetDTO>> GetContactLeadsAsync()
         {
             var leads = await _context.Contacts
                 .Where(c => c.Status == ContactStatus.Lead)
                 .ToListAsync();
-            return leads;
+            List<ContactGetDTO> contactsDTO = new();
+
+            foreach (var leadContact in leads)
+            {
+                ContactGetDTO contactDTO = new()
+                {
+                    Id = leadContact.Id,
+                    Name = leadContact.Name,
+                    Surname = leadContact.Surname,
+                    LastName = leadContact.LastName,
+                    Email = leadContact.Email,
+                    PhoneNumber = leadContact.PhoneNumber,
+                    Status = leadContact.Status,
+                    MarketingId = leadContact.MarketingId,
+                    DateOfLastChanges = leadContact.DateOfLastChanges,
+                };
+                contactsDTO.Add(contactDTO);
+            }
+            return contactsDTO;
         }
 
         public async Task CreateContactAsync(ContactSetDTO contact, int marketingId)

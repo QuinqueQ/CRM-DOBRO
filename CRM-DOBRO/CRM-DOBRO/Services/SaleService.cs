@@ -9,16 +9,28 @@ namespace CRM_DOBRO.Services
     {
         private readonly CRMDBContext _context = context;
 
-        public async Task<List<Sale>> GetSalesAsync()
+        public async Task<List<SaleGetDTO>> GetSalesAsync()
         {
-            List<Sale>? sales = await _context.Sales.ToListAsync();
-            return sales;
+            List<Sale> sales = await _context.Sales.ToListAsync();
+            List<SaleGetDTO> salesDTO = [];
+            foreach (Sale sale in sales)
+            {
+                SaleGetDTO saleDTO = new()
+                {
+                    Id = sale.Id,
+                    LeadId = sale.LeadId,
+                    SalerId = sale.SalerId,
+                    DateOfSale = sale.DateOfSale,
+                };
+            }
+            return salesDTO;
         }
 
         public async Task<List<Sale>> GetMySalesAsync(int salerId)
         {
-            List<Sale> Sales = await _context.Sales.Where(s => s.SalerId == salerId).ToListAsync();
-            return Sales;
+            List<Sale> sales = await _context.Sales.Where(s => s.SalerId == salerId).ToListAsync();
+            List<SaleGetDTO> salesDTO
+            return sales;
         }
 
         public async Task CreateSaleAsync(int salerId,SaleSetDTO sale)
