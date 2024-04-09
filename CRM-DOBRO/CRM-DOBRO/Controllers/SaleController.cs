@@ -1,6 +1,5 @@
 ﻿using CRM_DOBRO.Data;
 using CRM_DOBRO.DTOs;
-using CRM_DOBRO.Entities;
 using CRM_DOBRO.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace CRM_DOBRO.Controllers
         private readonly SaleService _saleservice = saleservice;
 
         [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [HttpGet("sales")]
         public async Task<IActionResult> GetSales()
         {
             var sales = await _saleservice.GetSalesAsync();
@@ -26,7 +25,7 @@ namespace CRM_DOBRO.Controllers
         }
 
         [Authorize(Roles = "Saler")]
-        [HttpGet("user/sales")]
+        [HttpGet("saler/sales")]
         public async Task<IActionResult> GetMySales()
         {
             int salerId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -41,7 +40,9 @@ namespace CRM_DOBRO.Controllers
         public async Task<IActionResult> SaleCreating(SaleSetDTO sale)
         {
             int salerId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _saleservice.CreateSaleAsync(salerId, sale);
+            var newSale = await _saleservice.CreateSaleAsync(salerId, sale);
+            if (newSale == null)
+                return NotFound();
             return Created();
 
         }

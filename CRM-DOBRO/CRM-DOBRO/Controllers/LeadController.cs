@@ -22,26 +22,30 @@ namespace CRM_DOBRO.Controllers
         {
             var salerid = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var leads = await _leadService.GetMyLeadsAsync(salerid);
+            if (leads.Count == 0)
+                return NoContent();
             return Ok(leads);
         }
 
         [Authorize(Roles = "Saler")]
-        [HttpPost("{contactId}")]
-        public async Task<IActionResult> LeadCreating(LeadSetDTO newlead, int contactId)
+        [HttpPost]
+        public async Task<IActionResult> LeadCreating(LeadSetDTO newlead)
         {
             var salerId = Convert.ToInt32(HttpContext.User.FindAll(ClaimTypes.NameIdentifier));
-            await _leadService.CreateLeadAsync(newlead,contactId, salerId);
+            bool contactFound = await _leadService.CreateLeadAsync(newlead, salerId);
+            if (!contactFound)
+                return NotFound();
 
             return Created();
         }
 
         [Authorize(Roles = "Saler")]
-        [HttpPut]
+        [HttpPut("{leadid}")]
         public async Task<IActionResult> StatusUpdate(LeadStatus status, int leadid)
         {
            Lead? lead = await _leadService.ChangeLeadStatusAsync(leadid, status);
             if (lead == null)
-                return NoContent();
+                return NotFound();
             return Ok();
         }
 

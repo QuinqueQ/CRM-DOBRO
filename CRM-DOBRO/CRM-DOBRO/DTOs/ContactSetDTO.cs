@@ -10,6 +10,5 @@ namespace CRM_DOBRO.DTOs
         public required string PhoneNumber { get; set; }
         public string? Email { get; set; }
         public required ContactStatus Status { get; set; }
-        public required DateTime DateOfLastChanges { get; set; }
     }
 }

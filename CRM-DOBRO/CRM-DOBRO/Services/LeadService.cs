@@ -6,21 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRM_DOBRO.Services
 {
-    public class LeadService
+    public class LeadService(CRMDBContext context)
     {
-        private readonly CRMDBContext _context;
-
-        public LeadService(CRMDBContext context)
-        {
-            this._context = context;
-        }
-
+        private readonly CRMDBContext _context = context;
         public async Task<List<LeadGetDTO>> GetMyLeadsAsync(int salerId)
         {
             List<Lead> leads = await _context.Leads
                 .Where(l => l.SalerId == salerId)
                 .ToListAsync();
-            List<LeadGetDTO> leadsDTO = new List<LeadGetDTO>();
+            List<LeadGetDTO> leadsDTO = [];
 
             foreach (var lead in leads)
             {
@@ -37,23 +31,27 @@ namespace CRM_DOBRO.Services
             return leadsDTO;
         }
 
-        public async Task CreateLeadAsync(LeadSetDTO newLead,int contactId, int salerId)
+        public async Task<bool> CreateLeadAsync(LeadSetDTO newLead, int salerId)
         {
             Lead lead = new()
             {
-                ContactId = contactId,
+                ContactId = newLead.ContactId,
                 SalerId = salerId,
-                Status = LeadStatus.New,
+                Status = newLead.Status,
             };
 
-            var contact = await _context.Contacts.FirstAsync(c => c.Id == contactId);
+            var contact = await _context.Contacts.FirstAsync(c => c.Id == newLead.ContactId);
+            if (contact == null)
+                return false;
+
             contact.Status = ContactStatus.Lead;
             _context.Update(contact);
             _context.Leads.Add(lead);
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<Lead> ChangeLeadStatusAsync(int leadId, LeadStatus status)
+        public async Task<Lead?> ChangeLeadStatusAsync(int leadId, LeadStatus status)
         {
 
             Lead? lead = await _context.Leads.FirstAsync(l => l.Id == leadId);

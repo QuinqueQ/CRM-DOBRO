@@ -1,8 +1,4 @@
-﻿using CRM_DOBRO.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace CRM_DOBRO.Entities
+﻿namespace CRM_DOBRO.Entities
 {
     public class Sale
     {

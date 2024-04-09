@@ -41,6 +41,17 @@ namespace CRM_DOBRO.Controllers
         [HttpPost]
         public async Task<IActionResult> ContactCreate(ContactSetDTO contact)
         {
+            if (string.IsNullOrWhiteSpace(contact.Name)
+                || contact.Name == "string"
+                || string.IsNullOrWhiteSpace(contact.Surname)
+                || contact.Surname == "string"
+                || string.IsNullOrWhiteSpace(contact.Email)
+                || contact.Email == "string"
+                || string.IsNullOrWhiteSpace(contact.PhoneNumber)
+                || contact.PhoneNumber == "string"
+                )
+                return BadRequest();
+
             int marketingId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             await _contactService.CreateContactAsync(contact, marketingId);
             return Created();

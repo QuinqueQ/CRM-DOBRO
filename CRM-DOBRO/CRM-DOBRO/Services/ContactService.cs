@@ -5,19 +5,13 @@ using CRM_DOBRO.Enums;
 using Microsoft.EntityFrameworkCore;
 namespace CRM_DOBRO.Services
 {
-    public class ContactService
+    public class ContactService(CRMDBContext context)
     {
-        private readonly CRMDBContext _context;
-
-        public ContactService(CRMDBContext context)
-        {
-            this._context = context;
-        }
-
+        private readonly CRMDBContext _context = context;
         public async Task<List<ContactGetDTO>> GetContactsAsync()
         {
            List<Contact> contacts = await _context.Contacts.ToListAsync();
-           List<ContactGetDTO> contactsDTO = new();
+           List<ContactGetDTO> contactsDTO = [];
 
             foreach (var contact in contacts)
             {
@@ -43,7 +37,7 @@ namespace CRM_DOBRO.Services
             var leads = await _context.Contacts
                 .Where(c => c.Status == ContactStatus.Lead)
                 .ToListAsync();
-            List<ContactGetDTO> contactsDTO = new();
+            List<ContactGetDTO> contactsDTO = [];
 
             foreach (var leadContact in leads)
             {
@@ -75,7 +69,7 @@ namespace CRM_DOBRO.Services
                 PhoneNumber = contact.PhoneNumber,
                 Status= contact.Status,
                 MarketingId = marketingId,
-                DateOfLastChanges = contact.DateOfLastChanges,
+                DateOfLastChanges = DateTime.Now,
             };
             _context.Add(newContact);
             await _context.SaveChangesAsync();
@@ -94,7 +88,7 @@ namespace CRM_DOBRO.Services
                 PhoneNumber = contact.PhoneNumber,
                 Status = contact.Status,
                 MarketingId = contactToChange.MarketingId,
-                DateOfLastChanges = contact.DateOfLastChanges,
+                DateOfLastChanges = DateTime.Now,
             };
             _context.Add(contactToChange);
             await _context.SaveChangesAsync();
@@ -105,6 +99,7 @@ namespace CRM_DOBRO.Services
         {
             var contact = await _context.Contacts.FirstAsync(c => c.Id == contactId);
             contact.Status = status;
+            contact.DateOfLastChanges = DateTime.Now;
             _context.Add(contact);
             await _context.SaveChangesAsync();
         }

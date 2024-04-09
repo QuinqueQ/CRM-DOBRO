@@ -22,19 +22,35 @@ namespace CRM_DOBRO.Services
                     SalerId = sale.SalerId,
                     DateOfSale = sale.DateOfSale,
                 };
+                salesDTO.Add(saleDTO);
             }
             return salesDTO;
         }
 
-        public async Task<List<Sale>> GetMySalesAsync(int salerId)
+        public async Task<List<SaleGetDTO>> GetMySalesAsync(int salerId)
         {
             List<Sale> sales = await _context.Sales.Where(s => s.SalerId == salerId).ToListAsync();
-            List<SaleGetDTO> salesDTO
-            return sales;
+            List<SaleGetDTO> salesDTO = [];
+            foreach (Sale sale in sales)
+            {
+                SaleGetDTO saleDTO = new()
+                {
+                    Id = sale.Id,
+                    LeadId = sale.LeadId,
+                    SalerId = sale.SalerId,
+                    DateOfSale = sale.DateOfSale,
+                };
+                salesDTO.Add(saleDTO);
+            }
+            return salesDTO;
         }
 
-        public async Task CreateSaleAsync(int salerId,SaleSetDTO sale)
+        public async Task<Sale?> CreateSaleAsync(int salerId,SaleSetDTO sale)
         {
+            var leadFound = await _context.Leads.FirstAsync(l => l.Id == sale.LeadId);
+            if (leadFound == null)
+                return null;
+
             Sale newSale = new()
             {
                 SalerId = salerId,
@@ -43,6 +59,8 @@ namespace CRM_DOBRO.Services
             };
             _context.Add(newSale);
             await _context.SaveChangesAsync();
+
+            return newSale;
         }
 
     }
