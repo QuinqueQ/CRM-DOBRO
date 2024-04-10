@@ -31,7 +31,7 @@ namespace CRM_DOBRO.Controllers
         [HttpPost]
         public async Task<IActionResult> LeadCreating(LeadSetDTO newlead)
         {
-            var salerId = Convert.ToInt32(HttpContext.User.FindAll(ClaimTypes.NameIdentifier));
+            var salerId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             bool contactFound = await _leadService.CreateLeadAsync(newlead, salerId);
             if (!contactFound)
                 return NotFound();
@@ -40,7 +40,7 @@ namespace CRM_DOBRO.Controllers
         }
 
         [Authorize(Roles = "Saler")]
-        [HttpPut("{leadid}")]
+        [HttpPut("status/{leadid}")]
         public async Task<IActionResult> StatusUpdate(LeadStatus status, int leadid)
         {
            Lead? lead = await _leadService.ChangeLeadStatusAsync(leadid, status);
@@ -48,10 +48,6 @@ namespace CRM_DOBRO.Controllers
                 return NotFound();
             return Ok();
         }
-
     }
 }
-//Лид:
-//-Просмотр своих лидов(доступно: продажник)
-//- Создание лида на основе контакта (доступно: продажник)
-//- Изменение статуса лида (доступно: продажник)
+

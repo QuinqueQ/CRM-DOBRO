@@ -11,7 +11,11 @@ namespace CRM_DOBRO.Services
 
         public async Task<List<SaleGetDTO>> GetSalesAsync()
         {
-            List<Sale> sales = await _context.Sales.ToListAsync();
+            List<Sale> sales = await _context.Sales
+                .Include(s => s.Saler)
+                .Include(s => s.Lead)
+                .ThenInclude(l => l.Contact)
+                .ToListAsync();
             List<SaleGetDTO> salesDTO = [];
             foreach (Sale sale in sales)
             {
@@ -19,7 +23,11 @@ namespace CRM_DOBRO.Services
                 {
                     Id = sale.Id,
                     LeadId = sale.LeadId,
+                    LeadtFullName = sale.Lead?.Contact?.Name 
+                    +" "+sale.Lead?.Contact?.Surname
+                    +" "+sale.Lead?.Contact?.LastName,
                     SalerId = sale.SalerId,
+                    SalerFullName = sale.Saler?.FullName,
                     DateOfSale = sale.DateOfSale,
                 };
                 salesDTO.Add(saleDTO);
@@ -29,7 +37,12 @@ namespace CRM_DOBRO.Services
 
         public async Task<List<SaleGetDTO>> GetMySalesAsync(int salerId)
         {
-            List<Sale> sales = await _context.Sales.Where(s => s.SalerId == salerId).ToListAsync();
+            List<Sale> sales = await _context.Sales
+                .Include(s => s.Lead)
+                .ThenInclude(l => l.Contact)
+                .Include(s => s.Saler)
+                .Where(s => s.SalerId == salerId)
+                .ToListAsync();
             List<SaleGetDTO> salesDTO = [];
             foreach (Sale sale in sales)
             {
@@ -37,7 +50,11 @@ namespace CRM_DOBRO.Services
                 {
                     Id = sale.Id,
                     LeadId = sale.LeadId,
+                    LeadtFullName = sale.Lead?.Contact?.Name
+                    + " " + sale.Lead?.Contact?.Surname
+                    + " " + sale.Lead?.Contact?.LastName,
                     SalerId = sale.SalerId,
+                    SalerFullName = sale.Saler?.FullName,
                     DateOfSale = sale.DateOfSale,
                 };
                 salesDTO.Add(saleDTO);

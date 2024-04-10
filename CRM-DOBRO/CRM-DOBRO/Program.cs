@@ -2,6 +2,7 @@ using CRM_DOBRO.Data;
 using CRM_DOBRO.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json.Serialization;
 
 internal class Program
 {
@@ -9,18 +10,21 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        ///
-        /// Регистрация контекста базы данных
-        ///
+    
         builder.Services.AddDbContext<CRMDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<ContactService>();
         builder.Services.AddScoped<LeadService>();
+        builder.Services.AddScoped<SaleService>();
+
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         builder.Services.AddAuthentication().AddCookie("Cookies", opts =>
         {

@@ -16,17 +16,8 @@ namespace CRM_DOBRO.Entities
         public List<Lead>? Leads { get; set; } // Saler
         public List<Sale>? Sales { get; set; } // Saler
     }
-    
 }
-/*
- Пользователь (User):
--Идентификатор(обяз)
-- ФИО(не обяз)
-- Адрес электронной почты(обяз)
--Пароль(обяз)
-- Роль(обяз)[enum -Admin, Marketing, Sales]
-- Дата блокировки (не обяз)
-*/
+
 
 
 

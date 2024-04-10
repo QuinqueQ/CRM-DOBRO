@@ -10,17 +10,9 @@ namespace CRM_DOBRO.Entities
         public LeadStatus Status { get; set; }
 
         // Навигационные свойства
-
         public Contact? Contact { get; set; }
         public User? Saler { get; set; }
         public List<Sale>? Sales { get; set; }
     }
-    
 }
-/*
- * Лид (Lead):
-- Идентификатор (обяз)
-- Идентификатор контакта (обяз) [один к одному]
-- Идентификатор продажника (не обяз) [один ко многим]
-- Статус лида (обяз) [enum - New, Proposition, Negotiation, Contract, Lost]
-*/
+

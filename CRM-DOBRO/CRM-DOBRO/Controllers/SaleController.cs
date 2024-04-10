@@ -15,7 +15,7 @@ namespace CRM_DOBRO.Controllers
         private readonly SaleService _saleservice = saleservice;
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("sales")]
+        [HttpGet]
         public async Task<IActionResult> GetSales()
         {
             var sales = await _saleservice.GetSalesAsync();
@@ -46,11 +46,7 @@ namespace CRM_DOBRO.Controllers
             return Created();
 
         }
-
     }
 }
-//Продажа:
-//-Просмотр всех продаж(доступно: админ)
-//- Просмотр своих продаж (доступно: продажник)
-//- Создание продажи (доступно: продажник)
+
 

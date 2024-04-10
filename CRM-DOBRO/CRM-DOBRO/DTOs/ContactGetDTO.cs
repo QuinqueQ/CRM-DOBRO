@@ -1,4 +1,5 @@
 ﻿using CRM_DOBRO.Enums;
+using Newtonsoft.Json;
 
 namespace CRM_DOBRO.DTOs
 {
@@ -6,6 +7,8 @@ namespace CRM_DOBRO.DTOs
     {
         public int Id { get; set; }
         public required int MarketingId { get; set; }
+        [JsonProperty("Marketing")]
+        public required string MarketingFullName { get; set; }
         public required string Name { get; set; }
         public string? Surname { get; set; }
         public string? LastName { get; set; }

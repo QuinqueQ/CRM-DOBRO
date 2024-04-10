@@ -16,14 +16,21 @@ namespace CRM_DOBRO.Controllers
     public class UserController(UserService userservice) : Controller
     {
         private readonly UserService _userservice = userservice;
-        
+
+        //[AllowAnonymous]
+        //[HttpGet("new/admin")]
+        //public async Task<IActionResult> AddAdmin()
+        //{
+        //    await _userservice.NewAdmin();
+        //    return Ok();
+        //}
+
+
+
         [AllowAnonymous]
         [HttpGet("login")]
         public async Task<IActionResult> LogIn(string email, string password)
         { 
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-                return Unauthorized();
-
             var user = await _userservice.LogInUserAsync(email, password);
             if (user != null)
             {
@@ -67,16 +74,8 @@ namespace CRM_DOBRO.Controllers
         [HttpPost]
         public async Task<IActionResult> UserCreate(UserSetDTO user)
         {
-            if (string.IsNullOrWhiteSpace(user.FullName)
-                || user.FullName == "string"
-                || string.IsNullOrWhiteSpace(user.Password)
-                || user.Password == "string"
-                || string.IsNullOrWhiteSpace(user.Email)
-                || user.Email == "string"
-                )
-                return BadRequest();
-
             await _userservice.CreateNewUserAsync(user);
+
             return Created();
         }
 
@@ -113,13 +112,10 @@ namespace CRM_DOBRO.Controllers
             return NoContent();
         }
 
-        
+        [Authorize]
         [HttpPut("password")]
         public async Task<IActionResult> ChangePassword(string NewPassword)
         {
-            if (string.IsNullOrWhiteSpace(NewPassword) || string.IsNullOrWhiteSpace(NewPassword))
-                return BadRequest();
-
                 int userId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             
                 await _userservice.ChangePasswordAsync(userId, NewPassword);
@@ -145,15 +141,7 @@ namespace CRM_DOBRO.Controllers
 
             return HttpContext.SignInAsync(principal);
         }
-
-
     }
 }
-//    Пользователь:
-//- Вход в систему(доступно: анонимно)
-//- Просмотр пользователей(доступно: админ)
-//- Просмотр данных пользователя(доступно: сам пользователь)
-//- Создание, блокировка и удаление пользователя(доступно: админ)
-//- Изменение роли пользователя(доступно: админ)
-//- Изменение пароля пользователя(доступно: сам пользователь)
+
 

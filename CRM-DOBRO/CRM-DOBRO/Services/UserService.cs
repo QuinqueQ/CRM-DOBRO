@@ -67,7 +67,7 @@ namespace CRM_DOBRO.Services
         {
             User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null)
+            if (user == null || user.Role == UserRole.Admin)
                 return null;
 
             user.BlockingDate = DateTime.Now;
@@ -81,8 +81,9 @@ namespace CRM_DOBRO.Services
         public async Task<bool> DeleteUserAsync(int id)
         {
             var user = await _context.Users.FirstAsync(u => u.Id == id);
-            if (user == null)
+            if (user == null|| user.Role == UserRole.Admin)
                 return false;
+
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return true;
@@ -91,7 +92,7 @@ namespace CRM_DOBRO.Services
         public async Task<bool> ChangeRoleAsync(int id, UserRole newRole)
         {
             var user = await _context.Users.FirstAsync(u => u.Id == id);
-            if(user == null)
+            if(user == null || user.Role == UserRole.Admin)
                 return false;
 
             user.Role = newRole;

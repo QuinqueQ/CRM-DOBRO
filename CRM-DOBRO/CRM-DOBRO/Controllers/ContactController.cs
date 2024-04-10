@@ -16,7 +16,7 @@ namespace CRM_DOBRO.Controllers
         private readonly ContactService _contactService = contactService;
 
         [Authorize(Roles = "Admin, Marketing")]
-        [HttpGet("contacts")]
+        [HttpGet]
         public async Task<IActionResult> GetContacts()
         {
            var contacts = await _contactService.GetContactsAsync();
@@ -37,21 +37,10 @@ namespace CRM_DOBRO.Controllers
             return Ok(leads);
         }
 
-        [Authorize(Roles = "Saler")]
+        [Authorize(Roles = "Marketing")]
         [HttpPost]
         public async Task<IActionResult> ContactCreate(ContactSetDTO contact)
         {
-            if (string.IsNullOrWhiteSpace(contact.Name)
-                || contact.Name == "string"
-                || string.IsNullOrWhiteSpace(contact.Surname)
-                || contact.Surname == "string"
-                || string.IsNullOrWhiteSpace(contact.Email)
-                || contact.Email == "string"
-                || string.IsNullOrWhiteSpace(contact.PhoneNumber)
-                || contact.PhoneNumber == "string"
-                )
-                return BadRequest();
-
             int marketingId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             await _contactService.CreateContactAsync(contact, marketingId);
             return Created();
@@ -73,13 +62,6 @@ namespace CRM_DOBRO.Controllers
             await _contactService.ContactChangeStatusAsync(status, contactid);
             return Ok();
         }
-
     }
 }
-//    Контакт:
-//- Просмотр всех контактов(доступно: админ, маркетолог)
-//- Просмотр контактов со статусом Lead(доступно: продажник)
-//- Создание контакта(доступно: маркетолог)
-//- Изменение контакта(доступно: маркетолог, продажник)
-//- Изменение статуса контакта(доступно: маркетолог)
 

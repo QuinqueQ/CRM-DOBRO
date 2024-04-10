@@ -8,14 +8,16 @@ namespace CRM_DOBRO.Services
     public class ContactService(CRMDBContext context)
     {
         private readonly CRMDBContext _context = context;
+
+
         public async Task<List<ContactGetDTO>> GetContactsAsync()
         {
-           List<Contact> contacts = await _context.Contacts.ToListAsync();
-           List<ContactGetDTO> contactsDTO = [];
+            List<Contact> contacts = await _context.Contacts.Include(c => c.Marketing).ToListAsync();
+            List<ContactGetDTO> contactsDTO = [];
 
             foreach (var contact in contacts)
             {
-                ContactGetDTO contactDTO = new()
+                ContactGetDTO contactDTO = new ()
                 {
                     Id = contact.Id,
                     Name = contact.Name,
@@ -25,9 +27,10 @@ namespace CRM_DOBRO.Services
                     PhoneNumber = contact.PhoneNumber,
                     Status = contact.Status,
                     MarketingId = contact.MarketingId,
+                    MarketingFullName = contact.Marketing?.FullName ?? "null",
                     DateOfLastChanges = contact.DateOfLastChanges,
                 };
-                contactsDTO.Add(contactDTO);            
+                contactsDTO.Add(contactDTO);
             }
             return contactsDTO;
         }
@@ -35,6 +38,7 @@ namespace CRM_DOBRO.Services
         public async Task<List<ContactGetDTO>> GetContactLeadsAsync()
         {
             var leads = await _context.Contacts
+                .Include(c => c.Marketing)
                 .Where(c => c.Status == ContactStatus.Lead)
                 .ToListAsync();
             List<ContactGetDTO> contactsDTO = [];
@@ -51,6 +55,7 @@ namespace CRM_DOBRO.Services
                     PhoneNumber = leadContact.PhoneNumber,
                     Status = leadContact.Status,
                     MarketingId = leadContact.MarketingId,
+                    MarketingFullName = leadContact.Marketing?.FullName ?? "null",
                     DateOfLastChanges = leadContact.DateOfLastChanges,
                 };
                 contactsDTO.Add(contactDTO);
@@ -77,30 +82,27 @@ namespace CRM_DOBRO.Services
 
         public async Task ContactChangeAsync(ContactSetDTO contact, int contactId)
         {
-          var contactToChange = await _context.Contacts.FirstAsync(c => c.Id == contactId);
-          
-            contactToChange = new()
-            {
-                Name = contact.Name,
-                Surname = contact.Surname,
-                LastName = contact.LastName,
-                Email = contact.Email,
-                PhoneNumber = contact.PhoneNumber,
-                Status = contact.Status,
-                MarketingId = contactToChange.MarketingId,
-                DateOfLastChanges = DateTime.Now,
-            };
-            _context.Add(contactToChange);
-            await _context.SaveChangesAsync();
+            var contactToChange = await _context.Contacts.FirstAsync(c => c.Id == contactId);
 
+            contactToChange.Name = contact.Name;
+            contactToChange.Surname = contact.Surname;
+            contactToChange.LastName = contact.LastName;
+            contactToChange.Email = contact.Email;
+            contactToChange.PhoneNumber = contact.PhoneNumber;
+            contactToChange.Status = contact.Status;
+            contactToChange.DateOfLastChanges = DateTime.Now;
+
+            _context.Update(contactToChange);
+            await _context.SaveChangesAsync();
         }
+
 
         public async Task ContactChangeStatusAsync(ContactStatus status, int contactId)
         {
             var contact = await _context.Contacts.FirstAsync(c => c.Id == contactId);
             contact.Status = status;
             contact.DateOfLastChanges = DateTime.Now;
-            _context.Add(contact);
+            _context.Update(contact);
             await _context.SaveChangesAsync();
         }
     }

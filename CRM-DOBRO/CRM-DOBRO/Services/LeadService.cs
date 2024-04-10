@@ -12,6 +12,8 @@ namespace CRM_DOBRO.Services
         public async Task<List<LeadGetDTO>> GetMyLeadsAsync(int salerId)
         {
             List<Lead> leads = await _context.Leads
+                .Include(l => l.Saler)
+                .Include(l => l.Contact)
                 .Where(l => l.SalerId == salerId)
                 .ToListAsync();
             List<LeadGetDTO> leadsDTO = [];
@@ -22,7 +24,11 @@ namespace CRM_DOBRO.Services
                 {
                     Id = lead.Id,
                     ContactId = lead.ContactId,
+                    ContactFullName = lead.Contact?.Name
+                    + " " + lead.Contact?.Surname
+                    + " " + lead.Contact?.LastName ?? "null",
                     SalerId = lead.SalerId,
+                    SalertFullName = lead.Saler?.FullName ?? "null",
                     Status = lead.Status,
                 };
                 leadsDTO.Add(leadDTO);

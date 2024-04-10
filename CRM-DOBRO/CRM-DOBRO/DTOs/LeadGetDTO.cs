@@ -1,4 +1,5 @@
 ﻿using CRM_DOBRO.Enums;
+using Newtonsoft.Json;
 
 namespace CRM_DOBRO.DTOs
 {
@@ -9,5 +10,9 @@ namespace CRM_DOBRO.DTOs
         public int? SalerId { get; set; }
         public LeadStatus Status { get; set; }
 
+        [JsonProperty("Contact")]
+        public required string ContactFullName { get; set; }
+        [JsonProperty("Saler")]
+        public required string SalertFullName { get; set; }
     }
 }
