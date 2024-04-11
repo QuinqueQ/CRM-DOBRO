@@ -1,5 +1,8 @@
 ﻿namespace CRM_DOBRO.Validation
 {
+    /// <summary>
+    /// Error messages for validation
+    /// </summary>
     public class Message
     {
         public const string REQUIRED = "Поле {0} не может быть пустым";

@@ -2,6 +2,9 @@
 
 namespace CRM_DOBRO.Enums
 {
+    /// <summary>
+    /// Enum for contact statuses
+    /// </summary>
     public enum ContactStatus
     {
         [EnumMember(Value = "Cold")]

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace CRM_DOBRO.Entities
+﻿namespace CRM_DOBRO.Entities
 {
     public class Sale
     {

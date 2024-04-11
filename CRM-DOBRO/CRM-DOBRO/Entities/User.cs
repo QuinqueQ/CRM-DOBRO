@@ -11,10 +11,10 @@ namespace CRM_DOBRO.Entities
         public required UserRole Role { get; set; }
         public DateTime? BlockingDate { get; set; }
 
-        // навигационные поля
-        public List<Contact>? Contacts { get; set; } // marketing
-        public List<Lead>? Leads { get; set; } // Saler
-        public List<Sale>? Sales { get; set; } // Saler
+        // Навигационные свойства
+        public List<Contact>? Contacts { get; set; }
+        public List<Lead>? Leads { get; set; }
+        public List<Sale>? Sales { get; set; }
     }
 }
 

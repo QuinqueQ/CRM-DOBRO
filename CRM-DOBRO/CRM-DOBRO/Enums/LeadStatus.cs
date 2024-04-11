@@ -2,6 +2,9 @@
 
 namespace CRM_DOBRO.Enums
 {
+    /// <summary>
+    /// Enum for lead statuses
+    /// </summary>
     public enum  LeadStatus
     {
         [EnumMember(Value = "New")]

@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CRM_DOBRO.DTOs
 {
+    /// <summary>
+    /// DTO for creating and changing a sale
+    /// </summary>
     public class SaleSetDTO
     {
         [DisplayName("ID Лида")]

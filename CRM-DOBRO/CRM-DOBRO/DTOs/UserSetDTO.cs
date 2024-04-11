@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CRM_DOBRO.DTOs
 {
+    /// <summary>
+    /// DTO for creating and changing a user
+    /// </summary>
     public class UserSetDTO
     {
         [DisplayName("ФИО")]

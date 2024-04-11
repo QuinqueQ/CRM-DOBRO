@@ -1,4 +1,4 @@
-﻿using CRM_DOBRO.Data;
+﻿using CRM_DOBRO.CustomAttributes;
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using Mapster;
@@ -20,7 +20,7 @@ namespace CRM_DOBRO.Services
 
             var salesDTO = sales.Adapt<List<SaleGetDTO>>();
 
-            foreach (Sale sale in sales)
+            foreach (Sale sale in sales) // We assign the FullName of the lead manually, since Mapster cannot assign them itself
             {
                 var saleDTO = salesDTO.FirstOrDefault(dto => dto.Id == sale.Id); 
                 if (saleDTO != null)
@@ -40,7 +40,7 @@ namespace CRM_DOBRO.Services
                 .ToListAsync();
             List<SaleGetDTO> salesDTO = sales.Adapt<List<SaleGetDTO>>();
 
-            foreach (Sale sale in sales)
+            foreach (Sale sale in sales) // We assign the FullName of the lead manually, since Mapster cannot assign them itself
             {
                 var saleDTO = salesDTO.FirstOrDefault(dto => dto.Id == sale.Id);
                 if (saleDTO != null)

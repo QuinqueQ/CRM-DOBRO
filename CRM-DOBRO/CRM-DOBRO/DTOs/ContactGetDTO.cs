@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace CRM_DOBRO.DTOs
 {
+    /// <summary>
+    /// DTO for obtaining contact fields
+    /// </summary>
     public class ContactGetDTO
     {
         public int Id { get; set; }

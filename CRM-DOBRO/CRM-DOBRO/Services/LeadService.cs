@@ -1,4 +1,4 @@
-﻿using CRM_DOBRO.Data;
+﻿using CRM_DOBRO.CustomAttributes;
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
@@ -23,7 +23,7 @@ namespace CRM_DOBRO.Services
             foreach (var lead in leads)
             {
                 LeadGetDTO? leadDTO = leadsDTO.FirstOrDefault(dto => dto.Id == lead.Id);
-                if (leadDTO != null)
+                if (leadDTO != null) // We assign the FOI of the contact and the salesperson manually, since Mapster cannot assign them itself
                 {
                     leadDTO.ContactFullName = lead.Contact?.Name + " " + lead.Contact?.Surname + " " + lead.Contact?.LastName;
                     leadDTO.SalertFullName = lead.Saler.FullName;

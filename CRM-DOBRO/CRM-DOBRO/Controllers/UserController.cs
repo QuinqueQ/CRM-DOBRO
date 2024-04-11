@@ -121,6 +121,11 @@ namespace CRM_DOBRO.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Method for user authentication with cookies
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private Task LoginWithHttpContext(User user)
         {
             var claims = new Claim[]

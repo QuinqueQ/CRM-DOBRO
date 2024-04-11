@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CRM_DOBRO.Data.Configurations
+namespace CRM_DOBRO.CustomAttributes.Configurations
 {
+    /// <summary>
+    /// Configuration file for links in the Leads table
+    /// </summary>
     public class LeadConfiguration : IEntityTypeConfiguration<Lead>
     {
         public void Configure(EntityTypeBuilder<Lead> builder)

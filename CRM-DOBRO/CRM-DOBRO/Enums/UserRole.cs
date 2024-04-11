@@ -2,6 +2,9 @@
 
 namespace CRM_DOBRO.Enums
 {
+    /// <summary>
+    /// Enum for user roles
+    /// </summary>
     public enum UserRole
     {
         [EnumMember(Value = "Admin")]

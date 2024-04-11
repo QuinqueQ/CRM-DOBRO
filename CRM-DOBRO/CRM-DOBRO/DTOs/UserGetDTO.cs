@@ -2,6 +2,9 @@
 
 namespace CRM_DOBRO.DTOs
 {
+    /// <summary>
+    /// DTO for obtaining user fields
+    /// </summary>
     public class UserGetDTO
     {
         public int Id { get; set; }

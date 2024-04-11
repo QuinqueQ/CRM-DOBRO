@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CRM_DOBRO.DTOs
-{
+{/// <summary>
+/// DTO for creating and changing a lead
+/// </summary>
     public class LeadSetDTO
     {
         [DisplayName("ID Контакта")]

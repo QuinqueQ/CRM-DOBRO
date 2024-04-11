@@ -1,4 +1,4 @@
-﻿using CRM_DOBRO.Data;
+﻿using CRM_DOBRO.CustomAttributes;
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
@@ -11,25 +11,28 @@ namespace CRM_DOBRO.Services
     {
         private readonly CRMDBContext _context = context;
 
-        //public async Task NewAdmin()
-        //{
-        //    var Admin =  new User
-        //    {
-        //        Email = "alonastq@gmail.com",
-        //        FullName = "Mamedov Nizar",
-        //        Password = "228615",
-        //        Role = Enums.UserRole.Admin,
-        //    };
-        //    _context.Users.Add(Admin);
-        //    await _context.SaveChangesAsync();
-        //}
-
-        public async Task CreateNewUserAsync(UserSetDTO newuser)
+        /// <summary>
+        /// Method for creating the first admin
+        /// </summary>
+        /// <returns></returns>
+        public async Task NewAdmin()
         {
-            User user = newuser.Adapt<User>();
-
-            _context.Users.Add(user);
+            var Admin = new User
+            {
+                Email = "alonastq@gmail.com",
+                FullName = "Mamedov Nizar",
+                Password = "228615",
+                Role = Enums.UserRole.Admin,
+            };
+            _context.Users.Add(Admin);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<User?> LogInUserAsync(string email, string password)
+        {
+
+            var selectedUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            return selectedUser;
         }
 
         public async Task<List<UserGetDTO>> GetAllUsersAsync()
@@ -39,12 +42,15 @@ namespace CRM_DOBRO.Services
             return usersDTO;
         }
 
-        public async Task<User?> LogInUserAsync(string email, string password)
+        public async Task CreateNewUserAsync(UserSetDTO newuser)
         {
+            User user = newuser.Adapt<User>();
 
-            var selectedUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-            return selectedUser;
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
         }
+
+
 
         public async Task<User?> BanUserAsync(int id)
         {

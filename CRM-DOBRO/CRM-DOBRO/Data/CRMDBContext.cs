@@ -1,9 +1,10 @@
-﻿using CRM_DOBRO.Data.Configurations;
+﻿using CRM_DOBRO.CustomAttributes.Configurations;
 using CRM_DOBRO.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CRM_DOBRO.Data
+namespace CRM_DOBRO.CustomAttributes
 {
+
     public class CRMDBContext(DbContextOptions<CRMDBContext> options) : DbContext(options)
     {
         public DbSet<Contact> Contacts { get; set; }

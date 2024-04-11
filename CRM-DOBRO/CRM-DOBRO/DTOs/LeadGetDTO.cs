@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace CRM_DOBRO.DTOs
 {
+    /// <summary>
+    /// DTO for obtaining lead fields
+    /// </summary>
     public class LeadGetDTO
     {
         public int Id { get; set; }

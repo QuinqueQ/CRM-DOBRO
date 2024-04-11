@@ -1,10 +1,12 @@
-﻿using CRM_DOBRO.Enums;
-using CRM_DOBRO.Validation;
+﻿using CRM_DOBRO.Validation;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CRM_DOBRO.DTOs
 {
+    /// <summary>
+    /// DTO for creating and changing a contact
+    /// </summary>
     public class ContactSetDTO
     {
         [DisplayName("Имя")]
