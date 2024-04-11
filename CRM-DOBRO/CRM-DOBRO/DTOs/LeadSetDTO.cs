@@ -9,11 +9,11 @@ namespace CRM_DOBRO.DTOs
     {
         [DisplayName("ID Контакта")]
         [Required(ErrorMessage = Message.REQUIRED)]
-        public required int ContactId { get; set; }
+        public required int ContactId { get; init; }
 
         [DisplayName("Статус лида")]
         [Required(ErrorMessage = Message.REQUIRED)]
         [EnumDataType(typeof(LeadStatus))]
-        public LeadStatus Status { get; set; }
+        public LeadStatus Status { get; init; }
     }
 }

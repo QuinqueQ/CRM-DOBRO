@@ -6,13 +6,15 @@ namespace CRM_DOBRO.DTOs
     {
         public int Id { get; set; }
         public required int LeadId { get; set; }
-        public int SalerId { get; set; }
-        public required DateTime DateOfSale { get; set; }
 
         [JsonProperty("Lead")]
         public required string LeadtFullName { get; set; }
+        public int SalerId { get; set; }
 
         [JsonProperty("Saler")]
         public string? SalerFullName { get; set; }
+        public required DateTime DateOfSale { get; set; }
+
+
     }
 }

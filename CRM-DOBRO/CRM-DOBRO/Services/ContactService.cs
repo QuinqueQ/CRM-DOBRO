@@ -2,6 +2,7 @@
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 namespace CRM_DOBRO.Services
 {
@@ -12,26 +13,12 @@ namespace CRM_DOBRO.Services
 
         public async Task<List<ContactGetDTO>> GetContactsAsync()
         {
-            List<Contact> contacts = await _context.Contacts.Include(c => c.Marketing).ToListAsync();
-            List<ContactGetDTO> contactsDTO = [];
+            List<Contact> contacts = await _context.Contacts
+                .Include(c => c.Marketing)
+                .ToListAsync();
 
-            foreach (var contact in contacts)
-            {
-                ContactGetDTO contactDTO = new ()
-                {
-                    Id = contact.Id,
-                    Name = contact.Name,
-                    Surname = contact.Surname,
-                    LastName = contact.LastName,
-                    Email = contact.Email,
-                    PhoneNumber = contact.PhoneNumber,
-                    Status = contact.Status,
-                    MarketingId = contact.MarketingId,
-                    MarketingFullName = contact.Marketing?.FullName ?? "null",
-                    DateOfLastChanges = contact.DateOfLastChanges,
-                };
-                contactsDTO.Add(contactDTO);
-            }
+            List<ContactGetDTO> contactsDTO = contacts.Adapt<List<ContactGetDTO>>();
+
             return contactsDTO;
         }
 
@@ -41,55 +28,27 @@ namespace CRM_DOBRO.Services
                 .Include(c => c.Marketing)
                 .Where(c => c.Status == ContactStatus.Lead)
                 .ToListAsync();
-            List<ContactGetDTO> contactsDTO = [];
 
-            foreach (var leadContact in leads)
-            {
-                ContactGetDTO contactDTO = new()
-                {
-                    Id = leadContact.Id,
-                    Name = leadContact.Name,
-                    Surname = leadContact.Surname,
-                    LastName = leadContact.LastName,
-                    Email = leadContact.Email,
-                    PhoneNumber = leadContact.PhoneNumber,
-                    Status = leadContact.Status,
-                    MarketingId = leadContact.MarketingId,
-                    MarketingFullName = leadContact.Marketing?.FullName ?? "null",
-                    DateOfLastChanges = leadContact.DateOfLastChanges,
-                };
-                contactsDTO.Add(contactDTO);
-            }
+            List<ContactGetDTO> contactsDTO = leads.Adapt<List<ContactGetDTO>>();
             return contactsDTO;
         }
 
         public async Task CreateContactAsync(ContactSetDTO contact, int marketingId)
         {
-            Contact newContact = new()
-            {
-                Name = contact.Name,
-                Surname= contact.Surname,
-                LastName = contact.LastName,
-                Email = contact.Email,
-                PhoneNumber = contact.PhoneNumber,
-                Status= contact.Status,
-                MarketingId = marketingId,
-                DateOfLastChanges = DateTime.Now,
-            };
+            Contact newContact = contact.Adapt<Contact>();
+
+            newContact.MarketingId = marketingId;
+            newContact.DateOfLastChanges = DateTime.Now;
+
             _context.Add(newContact);
             await _context.SaveChangesAsync();
         }
 
         public async Task ContactChangeAsync(ContactSetDTO contact, int contactId)
         {
-            var contactToChange = await _context.Contacts.FirstAsync(c => c.Id == contactId);
+            Contact? contactToChange = await _context.Contacts.FirstAsync(c => c.Id == contactId);
 
-            contactToChange.Name = contact.Name;
-            contactToChange.Surname = contact.Surname;
-            contactToChange.LastName = contact.LastName;
-            contactToChange.Email = contact.Email;
-            contactToChange.PhoneNumber = contact.PhoneNumber;
-            contactToChange.Status = contact.Status;
+            contactToChange = contact.Adapt(contactToChange);
             contactToChange.DateOfLastChanges = DateTime.Now;
 
             _context.Update(contactToChange);

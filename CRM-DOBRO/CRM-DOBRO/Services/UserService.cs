@@ -2,6 +2,7 @@
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRM_DOBRO.Services
@@ -25,13 +26,8 @@ namespace CRM_DOBRO.Services
 
         public async Task CreateNewUserAsync(UserSetDTO newuser)
         {
-            User user = new()
-            {
-                FullName = newuser.FullName,
-                Password = newuser.Password,
-                Role = newuser.Role,
-                Email = newuser.Email,
-            };
+            User user = newuser.Adapt<User>();
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
         }
@@ -39,20 +35,7 @@ namespace CRM_DOBRO.Services
         public async Task<List<UserGetDTO>> GetAllUsersAsync()
         {
             List<User> users = await _context.Users.ToListAsync();
-            List<UserGetDTO> usersDTO = [];
-
-            foreach (var user in users)
-            {
-                UserGetDTO userDTO = new ()
-                {
-                    FullName = user.FullName,
-                    Id = user.Id,
-                    Email = user.Email,
-                    Role = user.Role,
-                    BlockingDate = user.BlockingDate,
-                };
-                usersDTO.Add(userDTO);
-            }
+            List<UserGetDTO> usersDTO = users.Adapt<List<UserGetDTO>>();
             return usersDTO;
         }
 
@@ -92,7 +75,7 @@ namespace CRM_DOBRO.Services
         public async Task<bool> ChangeRoleAsync(int id, UserRole newRole)
         {
             var user = await _context.Users.FirstAsync(u => u.Id == id);
-            if(user == null || user.Role == UserRole.Admin)
+            if(user == null)
                 return false;
 
             user.Role = newRole;

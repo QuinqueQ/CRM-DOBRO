@@ -43,7 +43,7 @@ namespace CRM_DOBRO.Controllers
         [HttpPut("status/{leadid}")]
         public async Task<IActionResult> StatusUpdate(LeadStatus status, int leadid)
         {
-           Lead? lead = await _leadService.ChangeLeadStatusAsync(leadid, status);
+           LeadGetDTO? lead = await _leadService.ChangeLeadStatusAsync(leadid, status);
             if (lead == null)
                 return NotFound();
             return Ok();

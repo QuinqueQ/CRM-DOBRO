@@ -1,6 +1,7 @@
 ﻿using CRM_DOBRO.Data;
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRM_DOBRO.Services
@@ -16,22 +17,16 @@ namespace CRM_DOBRO.Services
                 .Include(s => s.Lead)
                 .ThenInclude(l => l.Contact)
                 .ToListAsync();
-            List<SaleGetDTO> salesDTO = [];
+
+            var salesDTO = sales.Adapt<List<SaleGetDTO>>();
+
             foreach (Sale sale in sales)
             {
-                SaleGetDTO saleDTO = new()
-                {
-                    Id = sale.Id,
-                    LeadId = sale.LeadId,
-                    LeadtFullName = sale.Lead?.Contact?.Name 
-                    +" "+sale.Lead?.Contact?.Surname
-                    +" "+sale.Lead?.Contact?.LastName,
-                    SalerId = sale.SalerId,
-                    SalerFullName = sale.Saler?.FullName,
-                    DateOfSale = sale.DateOfSale,
-                };
-                salesDTO.Add(saleDTO);
+                var saleDTO = salesDTO.FirstOrDefault(dto => dto.Id == sale.Id); 
+                if (saleDTO != null)
+                    saleDTO.LeadtFullName = $"{sale.Lead?.Contact?.Name} {sale.Lead?.Contact?.Surname} {sale.Lead?.Contact?.LastName}";
             }
+
             return salesDTO;
         }
 
@@ -43,22 +38,15 @@ namespace CRM_DOBRO.Services
                 .Include(s => s.Saler)
                 .Where(s => s.SalerId == salerId)
                 .ToListAsync();
-            List<SaleGetDTO> salesDTO = [];
+            List<SaleGetDTO> salesDTO = sales.Adapt<List<SaleGetDTO>>();
+
             foreach (Sale sale in sales)
             {
-                SaleGetDTO saleDTO = new()
-                {
-                    Id = sale.Id,
-                    LeadId = sale.LeadId,
-                    LeadtFullName = sale.Lead?.Contact?.Name
-                    + " " + sale.Lead?.Contact?.Surname
-                    + " " + sale.Lead?.Contact?.LastName,
-                    SalerId = sale.SalerId,
-                    SalerFullName = sale.Saler?.FullName,
-                    DateOfSale = sale.DateOfSale,
-                };
-                salesDTO.Add(saleDTO);
+                var saleDTO = salesDTO.FirstOrDefault(dto => dto.Id == sale.Id);
+                if (saleDTO != null)
+                    saleDTO.LeadtFullName = $"{sale.Lead?.Contact?.Name} {sale.Lead?.Contact?.Surname} {sale.Lead?.Contact?.LastName}";
             }
+
             return salesDTO;
         }
 
@@ -68,12 +56,9 @@ namespace CRM_DOBRO.Services
             if (leadFound == null)
                 return null;
 
-            Sale newSale = new()
-            {
-                SalerId = salerId,
-                DateOfSale = DateTime.Now,
-                LeadId = sale.LeadId,
-            };
+            Sale newSale = sale.Adapt<Sale>();
+            newSale.SalerId = salerId;
+           
             _context.Add(newSale);
             await _context.SaveChangesAsync();
 

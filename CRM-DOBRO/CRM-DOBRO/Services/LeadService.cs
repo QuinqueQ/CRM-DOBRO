@@ -2,6 +2,7 @@
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRM_DOBRO.Services
@@ -16,22 +17,17 @@ namespace CRM_DOBRO.Services
                 .Include(l => l.Contact)
                 .Where(l => l.SalerId == salerId)
                 .ToListAsync();
-            List<LeadGetDTO> leadsDTO = [];
+
+            List<LeadGetDTO> leadsDTO = leads.Adapt<List<LeadGetDTO>>();
 
             foreach (var lead in leads)
             {
-                LeadGetDTO leadDTO = new()
+                LeadGetDTO? leadDTO = leadsDTO.FirstOrDefault(dto => dto.Id == lead.Id);
+                if (leadDTO != null)
                 {
-                    Id = lead.Id,
-                    ContactId = lead.ContactId,
-                    ContactFullName = lead.Contact?.Name
-                    + " " + lead.Contact?.Surname
-                    + " " + lead.Contact?.LastName ?? "null",
-                    SalerId = lead.SalerId,
-                    SalertFullName = lead.Saler?.FullName ?? "null",
-                    Status = lead.Status,
-                };
-                leadsDTO.Add(leadDTO);
+                    leadDTO.ContactFullName = lead.Contact?.Name + " " + lead.Contact?.Surname + " " + lead.Contact?.LastName;
+                    leadDTO.SalertFullName = lead.Saler.FullName;
+                }
             }
 
             return leadsDTO;
@@ -39,12 +35,8 @@ namespace CRM_DOBRO.Services
 
         public async Task<bool> CreateLeadAsync(LeadSetDTO newLead, int salerId)
         {
-            Lead lead = new()
-            {
-                ContactId = newLead.ContactId,
-                SalerId = salerId,
-                Status = newLead.Status,
-            };
+            Lead lead = newLead.Adapt<Lead>();
+            lead.SalerId = salerId;
 
             var contact = await _context.Contacts.FirstAsync(c => c.Id == newLead.ContactId);
             if (contact == null)
@@ -57,15 +49,15 @@ namespace CRM_DOBRO.Services
             return true;
         }
 
-        public async Task<Lead?> ChangeLeadStatusAsync(int leadId, LeadStatus status)
+        public async Task<LeadGetDTO?> ChangeLeadStatusAsync(int leadId, LeadStatus status)
         {
 
             Lead? lead = await _context.Leads.FirstAsync(l => l.Id == leadId);
-       
             lead.Status = status;
             _context.Update(lead);
             await _context.SaveChangesAsync();
-            return lead;
+            LeadGetDTO leadDTO = lead.Adapt<LeadGetDTO>();
+            return leadDTO;
         }
 
     }

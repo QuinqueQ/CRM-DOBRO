@@ -10,29 +10,29 @@ namespace CRM_DOBRO.DTOs
         [DisplayName("Имя")]
         [Required(AllowEmptyStrings = false, ErrorMessage = Message.REQUIRED)]
         [MaxLength(50, ErrorMessage = Message.MAX_LENGTH)]
-        public string? Name { get; set; }
+        public required string Name { get; init; }
 
         [MaxLength(50, ErrorMessage = Message.MAX_LENGTH)]
         [DisplayName("Фамилия")]
-        public string? Surname { get; set; }
+        public string? Surname { get; init; }
 
         [DisplayName("Отчество")]
         [MaxLength(50, ErrorMessage = Message.MAX_LENGTH)]
-        public string? LastName { get; set; }
+        public string? LastName { get; init; }
 
         [DisplayName("Номер телефона")]
         [Required(AllowEmptyStrings = false, ErrorMessage = Message.REQUIRED)]
         [MaxLength(14, ErrorMessage = Message.MAX_LENGTH)]
         [Phone(ErrorMessage = Message.PHONE)]
-        public string? PhoneNumber { get; set; }
+        public required string PhoneNumber { get; init; }
 
         [MaxLength(20, ErrorMessage = Message.MAX_LENGTH)]
         [EmailAddress(ErrorMessage = Message.EMAIL)]
-        public string? Email { get; set; }
+        public string? Email { get; init; }
 
         [DisplayName("Статус контакта")]
         [Required(ErrorMessage = Message.REQUIRED)]
         [EnumDataType(typeof(ContactStatus))]
-        public ContactStatus Status { get; set; }
+        public ContactStatus Status { get; init; }
     }
 }

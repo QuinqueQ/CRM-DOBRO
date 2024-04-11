@@ -8,9 +8,9 @@ namespace CRM_DOBRO.DTOs
     {
         [DisplayName("ID Лида")]
         [Required(ErrorMessage = Message.REQUIRED)]
-        public required int LeadId { get; set; }
+        public required int LeadId { get; init; }
         [DisplayName("Дата прожажи")]
         [Required(ErrorMessage = Message.REQUIRED)]
-        public DateTime? DateOfSale { get; set; }
+        public DateTime? DateOfSale { get; init; }
     }
 }
