@@ -10,7 +10,7 @@ namespace CRM_DOBRO.DTOs
         [DisplayName("ФИО")]
         [Required(AllowEmptyStrings = false, ErrorMessage = Message.REQUIRED)]  
         [MaxLength(150, ErrorMessage = Message.MAX_LENGTH)]
-        public required string FullName { get; init; }
+        public string? FullName { get; init; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = Message.REQUIRED)]
         [MaxLength(20, ErrorMessage = Message.MAX_LENGTH)]

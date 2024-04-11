@@ -1,4 +1,4 @@
-﻿using CRM_DOBRO.Data;
+﻿using CRM_DOBRO.CustomAttributes;
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Enums;
 using CRM_DOBRO.Services;
@@ -16,7 +16,7 @@ namespace CRM_DOBRO.Controllers
         private readonly ContactService _contactService = contactService;
 
         [Authorize(Roles = "Admin, Marketing")]
-        [HttpGet]
+        [HttpGet("contacts")]
         public async Task<IActionResult> GetContacts()
         {
            var contacts = await _contactService.GetContactsAsync();

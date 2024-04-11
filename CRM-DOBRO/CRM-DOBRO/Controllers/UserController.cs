@@ -1,4 +1,4 @@
-﻿using CRM_DOBRO.Data;
+﻿using CRM_DOBRO.CustomAttributes;
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
@@ -24,8 +24,6 @@ namespace CRM_DOBRO.Controllers
         //    await _userservice.NewAdmin();
         //    return Ok();
         //}
-
-
 
         [AllowAnonymous]
         [HttpGet("login")]

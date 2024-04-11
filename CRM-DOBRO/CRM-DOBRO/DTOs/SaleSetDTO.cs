@@ -11,6 +11,6 @@ namespace CRM_DOBRO.DTOs
         public required int LeadId { get; init; }
         [DisplayName("Дата прожажи")]
         [Required(ErrorMessage = Message.REQUIRED)]
-        public DateTime? DateOfSale { get; init; }
+        public required DateTime DateOfSale { get; init; }
     }
 }

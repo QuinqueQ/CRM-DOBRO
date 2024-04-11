@@ -38,7 +38,7 @@ namespace CRM_DOBRO.Services
             Lead lead = newLead.Adapt<Lead>();
             lead.SalerId = salerId;
 
-            var contact = await _context.Contacts.FirstAsync(c => c.Id == newLead.ContactId);
+            var contact = await _context.Contacts.Where(c => c.Status == ContactStatus.Lead).FirstAsync(c => c.Id == newLead.ContactId);
             if (contact == null)
                 return false;
 

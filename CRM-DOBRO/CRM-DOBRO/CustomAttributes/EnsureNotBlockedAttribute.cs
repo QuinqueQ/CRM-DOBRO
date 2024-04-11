@@ -1,4 +1,4 @@
-﻿namespace CRM_DOBRO.Data
+﻿namespace CRM_DOBRO.CustomAttributes
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;

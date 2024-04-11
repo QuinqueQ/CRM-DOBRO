@@ -1,4 +1,4 @@
-﻿using CRM_DOBRO.Data;
+﻿using CRM_DOBRO.CustomAttributes;
 using CRM_DOBRO.DTOs;
 using CRM_DOBRO.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +15,7 @@ namespace CRM_DOBRO.Controllers
         private readonly SaleService _saleservice = saleservice;
 
         [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [HttpGet("sales")]
         public async Task<IActionResult> GetSales()
         {
             var sales = await _saleservice.GetSalesAsync();

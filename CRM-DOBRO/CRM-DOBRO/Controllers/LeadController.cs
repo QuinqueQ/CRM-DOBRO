@@ -1,6 +1,5 @@
-﻿using CRM_DOBRO.Data;
+﻿using CRM_DOBRO.CustomAttributes;
 using CRM_DOBRO.DTOs;
-using CRM_DOBRO.Entities;
 using CRM_DOBRO.Enums;
 using CRM_DOBRO.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +16,7 @@ namespace CRM_DOBRO.Controllers
         private readonly LeadService _leadService = leadService;
 
         [Authorize(Roles = "Saler")]
-        [HttpGet]
+        [HttpGet("leads")]
         public async Task<IActionResult> GetMyLeads()
         {
             var salerid = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));

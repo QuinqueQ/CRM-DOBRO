@@ -11,18 +11,18 @@ namespace CRM_DOBRO.Services
     {
         private readonly CRMDBContext _context = context;
 
-        public async Task NewAdmin()
-        {
-            var Admin =  new User
-            {
-                Email = "alonastq@gmail.com",
-                FullName = "Mamedov Nizar",
-                Password = "228615",
-                Role = Enums.UserRole.Admin,
-            };
-            _context.Users.Add(Admin);
-            await _context.SaveChangesAsync();
-        }
+        //public async Task NewAdmin()
+        //{
+        //    var Admin =  new User
+        //    {
+        //        Email = "alonastq@gmail.com",
+        //        FullName = "Mamedov Nizar",
+        //        Password = "228615",
+        //        Role = Enums.UserRole.Admin,
+        //    };
+        //    _context.Users.Add(Admin);
+        //    await _context.SaveChangesAsync();
+        //}
 
         public async Task CreateNewUserAsync(UserSetDTO newuser)
         {
@@ -75,7 +75,7 @@ namespace CRM_DOBRO.Services
         public async Task<bool> ChangeRoleAsync(int id, UserRole newRole)
         {
             var user = await _context.Users.FirstAsync(u => u.Id == id);
-            if(user == null)
+            if(user == null || user.Role == UserRole.Admin)
                 return false;
 
             user.Role = newRole;

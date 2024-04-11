@@ -30,9 +30,5 @@ namespace CRM_DOBRO.DTOs
         [EmailAddress(ErrorMessage = Message.EMAIL)]
         public string? Email { get; init; }
 
-        [DisplayName("Статус контакта")]
-        [Required(ErrorMessage = Message.REQUIRED)]
-        [EnumDataType(typeof(ContactStatus))]
-        public ContactStatus Status { get; init; }
     }
 }
