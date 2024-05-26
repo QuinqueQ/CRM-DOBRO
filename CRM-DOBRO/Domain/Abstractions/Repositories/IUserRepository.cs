@@ -1,9 +1,8 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Abstractions.Repositories
+namespace Domain.Abstractions.Repositories;
+
+public interface IUserRepository : IBaseRepository<User>
 {
-    public interface IUserRepository : IRepository<User>
-    {
-        Task<User?> LogInAsync(string email, string password);
-    }
+    Task<User?> LogInAsync(string email, string password);
 }

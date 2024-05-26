@@ -5,7 +5,6 @@ global using Newtonsoft.Json;
 
 global using Domain.Entities;
 global using Domain.Enums;
-global using Domain.Abstractions;
 global using Application.Contracts;
 global using Application.Validation;
 global using Application.Services;

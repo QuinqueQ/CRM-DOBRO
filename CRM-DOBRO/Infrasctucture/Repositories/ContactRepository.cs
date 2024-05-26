@@ -1,16 +1,21 @@
-﻿namespace Infrasctucture.Repositories
+﻿namespace Infrasctucture.Repositories;
+
+public class ContactRepository(CRMDBContext dbContext) : BaseRepository<Contact>(dbContext) ,IContactRepository
 {
-#pragma warning disable CS9107 
-    public class ContactRepository(CRMDBContext dbContext) : BaseRepository<Contact>(dbContext) ,IContactRepository
-#pragma warning restore CS9107 
+    public async Task<List<Contact>> GetContactLeadsAsync()
     {
-        public async Task<List<Contact>> FoundContactLeadsAsync()
-        {
-            var contactLeads = await dbContext.Contacts
-                .Include(c => c.Marketing)
-                .Where(c => c.Status == ContactStatus.Lead)
-                .ToListAsync();
-            return contactLeads;
-        }
+        var contactLeads = await DBcontext.Contacts
+            .Include(c => c.Marketing)
+            .Where(c => c.Status == ContactStatus.Lead)
+            .ToListAsync();
+        return contactLeads;
+    }
+
+    public override Task<List<Contact>> GetAllAsync()
+    {
+        return DBcontext.Set<Contact>()
+            .AsNoTracking()
+            .Include(c => c.Marketing)
+            .ToListAsync();
     }
 }

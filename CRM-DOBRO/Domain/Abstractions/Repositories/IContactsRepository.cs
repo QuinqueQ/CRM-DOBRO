@@ -1,9 +1,8 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Abstractions.Repositories
+namespace Domain.Abstractions.Repositories;
+
+public interface IContactRepository : IBaseRepository<Contact>
 {
-    public interface IContactRepository : IRepository<Contact>
-    {
-        Task<List<Contact>> FoundContactLeadsAsync();
-    }
+    Task<List<Contact>> GetContactLeadsAsync();
 }

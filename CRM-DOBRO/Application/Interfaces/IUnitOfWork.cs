@@ -1,7 +1,6 @@
-﻿namespace Application.Interfaces
+﻿namespace Application.Interfaces;
+
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        Task SaveChangesAsync();
-    }
+    Task SaveChangesAsync();
 }

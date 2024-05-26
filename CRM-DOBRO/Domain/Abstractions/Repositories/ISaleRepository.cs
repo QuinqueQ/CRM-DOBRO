@@ -1,11 +1,9 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Abstractions.Repositories
+namespace Domain.Abstractions.Repositories;
+
+public interface ISaleRepository : IBaseRepository<Sale>
 {
-    public interface ISaleRepository : IRepository<Sale>
-    {
-        Task<List<Sale>> GetSalesBySalerIdAsync(int salerId);
-        Task<Lead?> FoundLeadAsync(int leadId);
-        Task<List<Sale>> GetSalesAsync();
-    }
+    Task<List<Sale>> GetSalesBySalerIdAsync(int salerId);
+    Task<Lead?> FoundLeadAsync(int leadId);
 }

@@ -1,7 +1,7 @@
 ﻿using Domain.Abstractions;
 
-namespace Domain.Entities
-{
+namespace Domain.Entities;
+
     public class Sale : Entity
     {
         public required int LeadId { get; set; }
@@ -12,5 +12,4 @@ namespace Domain.Entities
         public Lead? Lead { get; set; } 
         public User? Saler { get; set; }
     }
-}
 

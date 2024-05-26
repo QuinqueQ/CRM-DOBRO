@@ -4,6 +4,7 @@ global using Microsoft.AspNetCore.Authentication;
 global using System.Security.Claims;
 
 global using Domain.Enums;
+global using Domain.Entities;
 global using Application.Contracts;
 global using Application.CustomAttributes;
 global using Application.Services;

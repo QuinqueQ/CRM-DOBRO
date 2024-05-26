@@ -1,19 +1,18 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Domain.Enums
+namespace Domain.Enums;
+
+/// <summary>
+/// Enum for user roles
+/// </summary>
+public enum UserRole
 {
-    /// <summary>
-    /// Enum for user roles
-    /// </summary>
-    public enum UserRole
-    {
-        [EnumMember(Value = "Admin")]
-        Admin = 1,
+    [EnumMember(Value = "Admin")]
+    Admin = 1,
 
-        [EnumMember(Value = "Marketing")]
-        Marketing,
+    [EnumMember(Value = "Marketing")]
+    Marketing,
 
-        [EnumMember(Value = "Saler")]
-        Saler
-    }
+    [EnumMember(Value = "Saler")]
+    Saler
 }
