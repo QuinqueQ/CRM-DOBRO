@@ -1,9 +1,4 @@
-﻿using Domain.Enums;
-using Application.Validation;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
-namespace Application.Contracts
+﻿namespace Application.Contracts
 {/// <summary>
 /// DTO for creating and changing a lead
 /// </summary>

@@ -1,7 +1,4 @@
-﻿using Domain.Enums;
-using Newtonsoft.Json;
-
-namespace Application.Contracts
+﻿namespace Application.Contracts
 {
     /// <summary>
     /// DTO for obtaining lead fields

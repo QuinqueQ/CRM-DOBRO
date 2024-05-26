@@ -1,19 +1,14 @@
-﻿using Application.Contracts;
-using Domain.Entities;
-using Domain.Enums;
-using Mapster;
+﻿using Domain.Abstractions.Repositories;
+
 namespace Application.Services
 {
-    public class ContactService(CRMDBContext context)
+    public class ContactService(IContactRepository contactRepository, IUnitOfWork uow)
     {
-        private readonly CRMDBContext _context = context;
-
-
         public async Task<List<ContactGetDTO>> GetContactsAsync()
         {
-            List<Contact> contacts = await _context.Contacts
-                .Include(c => c.Marketing)
-                .ToListAsync();
+            List<Contact> contacts = await contactRepository.GetAllAsync();
+            //.Include(c => c.Marketing)
+            //.ToListAsync();
 
             List<ContactGetDTO> contactsDTO = contacts.Adapt<List<ContactGetDTO>>();
 
@@ -22,12 +17,9 @@ namespace Application.Services
 
         public async Task<List<ContactGetDTO>> GetContactLeadsAsync()
         {
-            var leads = await _context.Contacts
-                .Include(c => c.Marketing)
-                .Where(c => c.Status == ContactStatus.Lead)
-                .ToListAsync();
+            var contactLeads = await contactRepository.FoundContactLeadsAsync();
 
-            List<ContactGetDTO> contactsDTO = leads.Adapt<List<ContactGetDTO>>();
+            List<ContactGetDTO> contactsDTO = contactLeads.Adapt<List<ContactGetDTO>>();
             return contactsDTO;
         }
 
@@ -38,29 +30,29 @@ namespace Application.Services
             newContact.MarketingId = marketingId;
             newContact.DateOfLastChanges = DateTime.Now;
 
-            _context.Add(newContact);
-            await _context.SaveChangesAsync();
+            await contactRepository.AddAsync(newContact);
+            await uow.SaveChangesAsync();
         }
 
         public async Task ContactChangeAsync(ContactSetDTO contact, int contactId)
         {
-            Contact? contactToChange = await _context.Contacts.FirstAsync(c => c.Id == contactId);
+            Contact? contactToChange = await contactRepository.GetByIdAsync(contactId);
 
             contactToChange = contact.Adapt(contactToChange);
             contactToChange.DateOfLastChanges = DateTime.Now;
 
-            _context.Update(contactToChange);
-            await _context.SaveChangesAsync();
+            contactRepository.Update(contactToChange);
+            await uow.SaveChangesAsync();
         }
 
 
         public async Task ContactChangeStatusAsync(ContactStatus status, int contactId)
         {
-            var contact = await _context.Contacts.FirstAsync(c => c.Id == contactId);
+            var contact = await contactRepository.GetByIdAsync(contactId);
             contact.Status = status;
             contact.DateOfLastChanges = DateTime.Now;
-            _context.Update(contact);
-            await _context.SaveChangesAsync();
+            contactRepository.Update(contact);
+            await uow.SaveChangesAsync();
         }
     }
 }

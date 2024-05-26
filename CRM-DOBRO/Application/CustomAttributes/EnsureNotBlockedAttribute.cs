@@ -1,8 +1,8 @@
-﻿namespace WebApi.CustomAttributes
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace Application.CustomAttributes
 {
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using System;
     /// <summary>
     /// Custom attribute for checking for blocked users
     /// </summary>

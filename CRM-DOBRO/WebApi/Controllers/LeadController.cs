@@ -1,12 +1,4 @@
-﻿using WebApi.CustomAttributes;
-using Application.Contracts;
-using Domain.Enums;
-using Application.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
-namespace WebApi.Controllers
+﻿namespace WebApi.Controllers
 {
     [EnsureNotBlocked]
     [ApiController]

@@ -1,20 +1,12 @@
-﻿using Application.Contracts;
-using Domain.Entities;
-using Domain.Enums;
-using Mapster;
+﻿using Domain.Abstractions.Repositories;
 
 namespace Application.Services
 {
-    public class LeadService(CRMDBContext context)
+    public class LeadService(ILeadRepository leadRepository, IUnitOfWork uow, IContactRepository contactRepository)
     {
-        private readonly CRMDBContext _context = context;
         public async Task<List<LeadGetDTO>> GetMyLeadsAsync(int salerId)
         {
-            List<Lead> leads = await _context.Leads
-                .Include(l => l.Saler)
-                .Include(l => l.Contact)
-                .Where(l => l.SalerId == salerId)
-                .ToListAsync();
+            List<Lead> leads = await leadRepository.GetLeadsBySalerIdAsync(salerId);
 
             List<LeadGetDTO> leadsDTO = leads.Adapt<List<LeadGetDTO>>();
 
@@ -36,24 +28,26 @@ namespace Application.Services
             Lead lead = newLead.Adapt<Lead>();
             lead.SalerId = salerId;
 
-            var contact = await _context.Contacts.Where(c => c.Status == ContactStatus.Lead).FirstAsync(c => c.Id == newLead.ContactId);
+            Contact? contact = await leadRepository.FoundContactLeadAsync(salerId);
             if (contact == null)
                 return false;
 
             contact.Status = ContactStatus.Lead;
-            _context.Update(contact);
-            _context.Leads.Add(lead);
-            await _context.SaveChangesAsync();
+
+            contactRepository.Update(contact);
+
+            await leadRepository.AddAsync(lead);
+            await uow.SaveChangesAsync();
+
             return true;
         }
 
         public async Task<LeadGetDTO?> ChangeLeadStatusAsync(int leadId, LeadStatus status)
         {
-
-            Lead? lead = await _context.Leads.FirstAsync(l => l.Id == leadId);
+            Lead? lead = await leadRepository.GetByIdAsync(leadId);
             lead.Status = status;
-            _context.Update(lead);
-            await _context.SaveChangesAsync();
+            leadRepository.Update(lead);
+            await uow.SaveChangesAsync();
             LeadGetDTO leadDTO = lead.Adapt<LeadGetDTO>();
             return leadDTO;
         }

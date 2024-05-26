@@ -1,6 +1,4 @@
-﻿using Domain.Enums;
-
-namespace Application.Contracts
+﻿namespace Application.Contracts
 {
     /// <summary>
     /// DTO for obtaining user fields

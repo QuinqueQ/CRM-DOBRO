@@ -1,13 +1,10 @@
-﻿using Application.Contracts;
-using Domain.Entities;
-using Domain.Enums;
-using Mapster;
+﻿using Domain.Abstractions.Repositories;
+using System.Security.Claims;
 
 namespace Application.Services
 {
-    public class UserService(CRMDBContext context)
+    public class UserService(IUserRepository userRepository, IUnitOfWork uow)
     {
-        private readonly CRMDBContext _context = context;
 
         /// <summary>
         /// Method for creating the first admin
@@ -22,21 +19,42 @@ namespace Application.Services
                 Password = "228615",
                 Role = UserRole.Admin,
             };
-            _context.Users.Add(Admin);
-            await _context.SaveChangesAsync();
-        }
 
+           await userRepository.AddAsync(Admin);
+           await uow.SaveChangesAsync();
+
+        }
+        public static ClaimsPrincipal LoginWithHttpContext(User user)
+        {
+            var claims = new Claim[]
+            {
+            new ("guid", Guid.NewGuid().ToString()),
+            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new (ClaimTypes.Name, user.FullName),
+            new (ClaimTypes.Email, user.Email),
+            new (ClaimTypes.Role, user.Role.ToString()),
+            new ("DateOfBan", user.BlockingDate.ToString() ?? "")
+
+            };
+
+            var identity = new ClaimsIdentity(claims, "Cookies");
+            ClaimsPrincipal principal = new (identity);
+
+            return principal;
+        }
+        
         public async Task<User?> LogInUserAsync(string email, string password)
         {
 
-            var selectedUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            User? selectedUser = await userRepository.LogInAsync(email, password);
             return selectedUser!;
         }
 
         public async Task<List<UserGetDTO>> GetAllUsersAsync()
         {
-            List<User> users = await _context.Users.ToListAsync();
+            List<User> users = await userRepository.GetAllAsync();
             List<UserGetDTO> usersDTO = users.Adapt<List<UserGetDTO>>();
+
             return usersDTO;
         }
 
@@ -44,56 +62,55 @@ namespace Application.Services
         {
             User user = newuser.Adapt<User>();
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+           await userRepository.AddAsync(user);
+           await uow.SaveChangesAsync();
         }
 
 
 
         public async Task<User?> BanUserAsync(int id)
         {
-            User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            User? user = await userRepository.GetByIdAsync(id);
 
             if (user == null || user.Role == UserRole.Admin)
                 return null;
 
             user.BlockingDate = DateTime.Now;
-            _context.Update(user);
-            _context.SaveChanges();
-
+            userRepository.Update(user);
+            await uow.SaveChangesAsync();
             return user;
         }
 
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            var user = await _context.Users.FirstAsync(u => u.Id == id);
+            var user = await userRepository.GetByIdAsync(id);
             if (user == null|| user.Role == UserRole.Admin)
                 return false;
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            userRepository.Remove(user);
+            await uow.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> ChangeRoleAsync(int id, UserRole newRole)
         {
-            var user = await _context.Users.FirstAsync(u => u.Id == id);
+            var user = await userRepository.GetByIdAsync(id);
             if(user == null || user.Role == UserRole.Admin)
                 return false;
 
             user.Role = newRole;
-            _context.Update(user);
-            await _context.SaveChangesAsync();
+            userRepository.Update(user);
+            await uow.SaveChangesAsync();
             return true;
         }
 
         public async Task ChangePasswordAsync(int id, string newPassword)
         {
-            var user = await _context.Users.FirstAsync(u => u.Id == id);
+            var user = await userRepository.GetByIdAsync(id);
             user.Password = newPassword;
-            _context.Update(user);
-            await _context.SaveChangesAsync();
+            userRepository.Update(user);
+            await uow.SaveChangesAsync();
         }
 
     }

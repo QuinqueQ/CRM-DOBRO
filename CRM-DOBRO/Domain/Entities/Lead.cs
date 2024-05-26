@@ -1,10 +1,10 @@
-﻿using Domain.Enums;
+﻿using Domain.Abstractions;
+using Domain.Enums;
 
 namespace Domain.Entities
 {
-    public class Lead
+    public class Lead : Entity
     {
-        public  int Id { get; set; }
         public required int ContactId { get; set; }
         public int? SalerId { get; set; }
         public LeadStatus Status { get; set; }

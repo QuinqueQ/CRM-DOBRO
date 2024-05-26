@@ -1,24 +1,16 @@
-﻿using Application.Contracts;
-using Domain.Entities;
-using Mapster;
+﻿using Domain.Abstractions.Repositories;
 
 namespace Application.Services
 {
-    public class SaleService(CRMDBContext context)
+    public class SaleService(ISaleRepository saleRepository, IUnitOfWork uow)
     {
-        private readonly CRMDBContext _context = context;
-
         public async Task<List<SaleGetDTO>> GetSalesAsync()
         {
-            List<Sale> sales = await _context.Sales
-                .Include(s => s.Saler)
-                .Include(s => s.Lead)
-                .ThenInclude(l => l.Contact)
-                .ToListAsync();
+            List<Sale> sales = await saleRepository.GetSalesAsync();
 
             var salesDTO = sales.Adapt<List<SaleGetDTO>>();
 
-            foreach (Sale sale in sales) // We assign the FullName of the lead manually, since Mapster cannot assign them itself
+            foreach (Sale sale in sales)
             {
                 var saleDTO = salesDTO.FirstOrDefault(dto => dto.Id == sale.Id); 
                 if (saleDTO != null)
@@ -30,12 +22,8 @@ namespace Application.Services
 
         public async Task<List<SaleGetDTO>> GetMySalesAsync(int salerId)
         {
-            List<Sale> sales = await _context.Sales
-                .Include(s => s.Lead)
-                .ThenInclude(l => l.Contact)
-                .Include(s => s.Saler)
-                .Where(s => s.SalerId == salerId)
-                .ToListAsync();
+            List<Sale> sales = await saleRepository.GetSalesBySalerIdAsync(salerId);
+
             List<SaleGetDTO> salesDTO = sales.Adapt<List<SaleGetDTO>>();
 
             foreach (Sale sale in sales) // We assign the FullName of the lead manually, since Mapster cannot assign them itself
@@ -50,15 +38,14 @@ namespace Application.Services
 
         public async Task<Sale?> CreateSaleAsync(int salerId,SaleSetDTO sale)
         {
-            var leadFound = await _context.Leads.FirstAsync(l => l.Id == sale.LeadId);
+            Lead? leadFound = await saleRepository.FoundLeadAsync(sale.LeadId);
             if (leadFound == null)
                 return null;
-
             Sale newSale = sale.Adapt<Sale>();
             newSale.SalerId = salerId;
            
-            _context.Add(newSale);
-            await _context.SaveChangesAsync();
+            await saleRepository.AddAsync(newSale);
+            await uow.SaveChangesAsync();
 
             return newSale;
         }

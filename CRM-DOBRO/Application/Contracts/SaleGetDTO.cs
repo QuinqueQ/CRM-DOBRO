@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Application.Contracts
+﻿namespace Application.Contracts
 {
     /// <summary>
     /// DTO for obtaining sale fields

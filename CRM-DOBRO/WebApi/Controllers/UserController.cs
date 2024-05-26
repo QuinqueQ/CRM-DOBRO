@@ -1,14 +1,4 @@
-﻿using WebApi.CustomAttributes;
-using Application.Contracts;
-using Domain.Entities;
-using Domain.Enums;
-using Application.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
-namespace WebApi.Controllers
+﻿namespace WebApi.Controllers
 {
     [EnsureNotBlocked]
     [ApiController]
@@ -32,7 +22,8 @@ namespace WebApi.Controllers
             var user = await _userservice.LogInUserAsync(email, password);
             if (user != null)
             {
-                await LoginWithHttpContext(user);
+                ClaimsPrincipal? principal = _userservice.LoginWithHttpContext(user);
+                await HttpContext.SignInAsync(principal);
 
                 return Ok();
             }
@@ -119,30 +110,6 @@ namespace WebApi.Controllers
                 await _userservice.ChangePasswordAsync(userId, NewPassword);
 
             return Ok();
-        }
-
-        /// <summary>
-        /// Method for user authentication with cookies
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private Task LoginWithHttpContext(User user)
-        {
-            var claims = new Claim[]
-            {
-            new ("guid", Guid.NewGuid().ToString()),
-            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new (ClaimTypes.Name, user.FullName),
-            new (ClaimTypes.Email, user.Email),
-            new (ClaimTypes.Role, user.Role.ToString()),
-            new ("DateOfBan", user.BlockingDate.ToString() ?? "")
-            
-            };
-
-            var identity = new ClaimsIdentity(claims, "Cookies");
-            var principal = new ClaimsPrincipal(identity);
-
-            return HttpContext.SignInAsync(principal);
         }
     }
 }

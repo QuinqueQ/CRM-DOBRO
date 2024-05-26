@@ -1,8 +1,4 @@
-﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Infrasctucture.Configurations
+﻿namespace Infrasctucture.Data.Configurations
 {
     /// <summary>
     /// Configuration file for links in the Sales table

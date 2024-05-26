@@ -1,10 +1,10 @@
-﻿using Domain.Enums;
+﻿using Domain.Abstractions;
+using Domain.Enums;
 
 namespace Domain.Entities
 {
-    public class Contact
+    public class Contact : Entity
     {
-        public int Id { get; set; }
         public required int MarketingId { get; set; }
         public required string Name { get; set; }
         public string? Surname { get; set; }

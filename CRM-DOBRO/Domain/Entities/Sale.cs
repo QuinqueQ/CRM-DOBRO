@@ -1,8 +1,9 @@
-﻿namespace Domain.Entities
+﻿using Domain.Abstractions;
+
+namespace Domain.Entities
 {
-    public class Sale
+    public class Sale : Entity
     {
-        public int Id { get; set; }
         public required int LeadId { get; set; }
         public int SalerId { get; set;}
         public required DateTime DateOfSale { get; set; }

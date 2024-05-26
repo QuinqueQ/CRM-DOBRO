@@ -1,10 +1,5 @@
-﻿using Infrasctucture.Configurations;
-using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace Infrasctucture
+﻿namespace Infrasctucture.Data
 {
-
     public class CRMDBContext(DbContextOptions<CRMDBContext> options) : DbContext(options)
     {
         public DbSet<Contact> Contacts { get; set; }
