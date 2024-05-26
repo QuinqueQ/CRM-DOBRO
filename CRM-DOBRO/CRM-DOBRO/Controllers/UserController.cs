@@ -26,18 +26,6 @@ namespace CRM_DOBRO.Controllers
         //}
 
 
-
-        [AllowAnonymous]
-        [HttpGet("irina")]
-        public async Task<IActionResult> GetIrina()
-        {
-            var Irina = new Irina();
-            Irina.Age = 18;
-            Irina.SurName = "Mamedova";
-            Irina.Name = "Ирусалим";
-            return Ok(Irina);
-        }
-
         [AllowAnonymous]
         [HttpGet("login")]
         public async Task<IActionResult> LogIn(string email, string password)
