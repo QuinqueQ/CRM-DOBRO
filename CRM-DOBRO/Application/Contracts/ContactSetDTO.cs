@@ -10,8 +10,8 @@ public class ContactSetDTO
     [MaxLength(50, ErrorMessage = Message.MAX_LENGTH)]
     public required string Name { get; init; }
 
-    [MaxLength(50, ErrorMessage = Message.MAX_LENGTH)]
     [DisplayName("Фамилия")]
+    [MaxLength(50, ErrorMessage = Message.MAX_LENGTH)]
     public string? Surname { get; init; }
 
     [DisplayName("Отчество")]

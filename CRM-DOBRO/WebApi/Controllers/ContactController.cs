@@ -1,4 +1,6 @@
-﻿namespace WebApi.Controllers;
+﻿using Domain.Result.ErrorMessage;
+
+namespace WebApi.Controllers;
 
 [EnsureNotBlocked]
 [ApiController]
@@ -10,27 +12,28 @@ public class ContactController(ContactService contactService) : Controller
     [HttpGet("contacts")]
     public async Task<IActionResult> GetContacts()
     {
-       var contacts = await contactService.GetContactsAsync();
-        if (contacts.Count == 0)
+       var resultContacts = await contactService.GetAllAsync();
+
+        if (resultContacts.Value.Count == 0)
             return NoContent();
 
-        return Ok(contacts);
+        return Ok(resultContacts.Value);
     }
 
     [Authorize(Roles = "Saler")]
     [HttpGet("leads")]
     public async Task<IActionResult> GetLeads()
     {
-        var leads = await contactService.GetContactLeadsAsync();
-        if(leads.Count == 0)
+        var resultLeads = await contactService.GetLeadsAsync();
+        if(resultLeads.Value.Count == 0)
             return NoContent();
        
-        return Ok(leads);
+        return Ok(resultLeads.Value);
     }
 
     [Authorize(Roles = "Marketing")]
     [HttpPost]
-    public async Task<IActionResult> ContactCreate(ContactSetDTO contact)
+    public async Task<IActionResult> Create(ContactSetDTO contact)
     {
         int marketingId = Convert.ToInt32(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
         await contactService.CreateContactAsync(contact, marketingId);
@@ -40,18 +43,36 @@ public class ContactController(ContactService contactService) : Controller
 
     [Authorize(Roles = "Marketing, Saler")]
     [HttpPut("{contactid}")]
-    public async Task<IActionResult> ContactUpdate(ContactSetDTO contact, int contactid)
+    public async Task<IActionResult> Update(ContactSetDTO contact, int contactid)
     {
-        await contactService.ContactChangeAsync(contact, contactid);
-        return Ok();
+        var result = await contactService.ContactUpdateAsync(contact, contactid);
+        return result.Match(
+            onSuccess: value => Ok(result.Value),
+            onFailure: error =>
+            {
+                if (error.Code == ContactErrors.IdNotFound)
+                    return NotFound();
+                return BadRequest(result.Error);
+            });
+
+
+
     }
 
     [Authorize(Roles = "Marketing")]
     [HttpPut("status/{contactid}")]
-    public async Task<IActionResult> ContactStatusUpdate (ContactStatus status, int contactid)
+    public async Task<IActionResult> StatusUpdate(ContactStatus status, int contactid)
     {
-        await contactService.ContactChangeStatusAsync(status, contactid);
-        return Ok();
+        var result = await contactService.ContactChangeStatusAsync(status, contactid);
+
+        return result.Match(
+            onSuccess: value => Ok(),
+            onFailure: error =>
+            { if(error.Code == ContactErrors.IdNotFound)
+                    return NotFound();
+
+                return BadRequest(result.Error);
+            });
     }
 }
 
