@@ -28,7 +28,7 @@ public class ContactController(ContactService contactService) : Controller
         return Ok(leads);
     }
 
-    [Authorize(Roles = "Marketing")]
+    [Authorize(Roles = "Marketing, Admin")]
     [HttpPost]
     public async Task<IActionResult> ContactCreate(ContactSetDTO contact)
     {

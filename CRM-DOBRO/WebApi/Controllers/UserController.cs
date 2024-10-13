@@ -5,14 +5,14 @@
 [Route("api/user")]
 public class UserController(UserService userservice) : Controller
 {
-    // Admin
-    //[AllowAnonymous]
-    //[HttpGet("new/admin")]
-    //public async Task<IActionResult> AddAdmin()
-    //{
-    //    await userservice.NewAdmin();
-    //    return Ok();
-    //}
+    //Admin
+   //[AllowAnonymous]
+   //[HttpGet("new/admin")]
+   // public async Task<IActionResult> AddAdmin()
+   // {
+   //     await userservice.NewAdmin();
+   //     return Ok();
+   // }
 
     [AllowAnonymous]
     [HttpGet("login")]
